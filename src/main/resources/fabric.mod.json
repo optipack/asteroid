@@ -3,7 +3,7 @@
   "name": "Asteroid",
   "id": "meteor-client",
   "version": "${version}",
-  "description": "Utility client with only the utilities. Fork of Meteor Client.",
+  "description": "Utility client with only the utilities. Forked from Meteor Client by Moxvallix. Meteor Client by MineGame159, squidoodly and seasnail",
   "authors": [
     "MineGame159",
     "squidoodly",
