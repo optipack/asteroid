@@ -43,8 +43,8 @@ public class InventoryTweaks extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgSorting = settings.createGroup("Sorting");
     private final SettingGroup sgAutoDrop = settings.createGroup("Auto Drop");
-    private final SettingGroup sgStealDump = settings.createGroup("Steal and Dump");
-    private final SettingGroup sgAutoSteal = settings.createGroup("Auto Steal");
+    private final SettingGroup sgStealDump = settings.createGroup("Extract and Insert");
+    private final SettingGroup sgAutoSteal = settings.createGroup("Auto Extract");
 
     // General
 
@@ -61,24 +61,24 @@ public class InventoryTweaks extends Module {
         .build()
     );
 
-    private final Setting<Boolean> xCarry = sgGeneral.add(new BoolSetting.Builder()
-        .name("xcarry")
-        .description("Allows you to store four extra item stacks in your crafting grid.")
-        .defaultValue(true)
-        .onChanged(v -> {
-            if (v || !Utils.canUpdate()) return;
-            mc.player.networkHandler.sendPacket(new CloseHandledScreenC2SPacket(mc.player.playerScreenHandler.syncId));
-            invOpened = false;
-        })
-        .build()
-    );
+    // private final Setting<Boolean> xCarry = sgGeneral.add(new BoolSetting.Builder()
+    //     .name("xcarry")
+    //     .description("Allows you to store four extra item stacks in your crafting grid.")
+    //     .defaultValue(true)
+    //     .onChanged(v -> {
+    //         if (v || !Utils.canUpdate()) return;
+    //         mc.player.networkHandler.sendPacket(new CloseHandledScreenC2SPacket(mc.player.playerScreenHandler.syncId));
+    //         invOpened = false;
+    //     })
+    //     .build()
+    // );
 
-    private final Setting<Boolean> armorStorage = sgGeneral.add(new BoolSetting.Builder()
-        .name("armor-storage")
-        .description("Allows you to put normal items in your armor slots.")
-        .defaultValue(true)
-        .build()
-    );
+    // private final Setting<Boolean> armorStorage = sgGeneral.add(new BoolSetting.Builder()
+    //     .name("armor-storage")
+    //     .description("Allows you to put normal items in your armor slots.")
+    //     .defaultValue(true)
+    //     .build()
+    // );
 
     // Sorting
 
@@ -138,22 +138,22 @@ public class InventoryTweaks extends Module {
     // Steal & Dump
 
     public final Setting<List<ScreenHandlerType<?>>> stealScreens = sgStealDump.add(new ScreenHandlerListSetting.Builder()
-        .name("steal-screens")
-        .description("Select the screens to display buttons and auto steal.")
+        .name("extract-screens")
+        .description("Select the screens to display buttons and auto extract.")
         .defaultValue(List.of(ScreenHandlerType.GENERIC_9X3, ScreenHandlerType.GENERIC_9X6))
         .build()
     );
 
     private final Setting<Boolean> buttons = sgStealDump.add(new BoolSetting.Builder()
         .name("inventory-buttons")
-        .description("Shows steal and dump buttons in container guis.")
+        .description("Shows extract and insert buttons in container guis.")
         .defaultValue(true)
         .build()
     );
 
     private final Setting<Boolean> stealDrop = sgStealDump.add(new BoolSetting.Builder()
-        .name("steal-drop")
-        .description("Drop items to the ground instead of stealing them.")
+        .name("extract-drop")
+        .description("Drop items to the ground when extracting them.")
         .defaultValue(false)
         .build()
     );
@@ -167,35 +167,35 @@ public class InventoryTweaks extends Module {
     );
 
     private final Setting<ListMode> dumpFilter = sgStealDump.add(new EnumSetting.Builder<ListMode>()
-        .name("dump-filter")
-        .description("Dump mode.")
+        .name("insert-filter")
+        .description("Insert mode.")
         .defaultValue(ListMode.None)
         .build()
     );
 
     private final Setting<List<Item>> dumpItems = sgStealDump.add(new ItemListSetting.Builder()
-        .name("dump-items")
-        .description("Items to dump.")
+        .name("insert-items")
+        .description("Items to insert.")
         .build()
     );
 
     private final Setting<ListMode> stealFilter = sgStealDump.add(new EnumSetting.Builder<ListMode>()
-        .name("steal-filter")
-        .description("Steal mode.")
+        .name("extract-filter")
+        .description("Extract mode.")
         .defaultValue(ListMode.None)
         .build()
     );
 
     private final Setting<List<Item>> stealItems = sgStealDump.add(new ItemListSetting.Builder()
-        .name("steal-items")
-        .description("Items to steal.")
+        .name("extract-items")
+        .description("Items to extract.")
         .build()
     );
 
     // Auto Steal
 
     private final Setting<Boolean> autoSteal = sgAutoSteal.add(new BoolSetting.Builder()
-        .name("auto-steal")
+        .name("auto-extract")
         .description("Automatically removes all possible items when you open a container.")
         .defaultValue(false)
         .onChanged(val -> checkAutoStealSettings())
@@ -203,8 +203,8 @@ public class InventoryTweaks extends Module {
     );
 
     private final Setting<Boolean> autoDump = sgAutoSteal.add(new BoolSetting.Builder()
-        .name("auto-dump")
-        .description("Automatically dumps all possible items when you open a container.")
+        .name("auto-insert")
+        .description("Automatically inserts all possible items when you open a container.")
         .defaultValue(false)
         .onChanged(val -> checkAutoStealSettings())
         .build()
@@ -212,7 +212,7 @@ public class InventoryTweaks extends Module {
 
     private final Setting<Integer> autoStealDelay = sgAutoSteal.add(new IntSetting.Builder()
         .name("delay")
-        .description("The minimum delay between stealing the next stack in milliseconds.")
+        .description("The minimum delay between extracting the next stack in milliseconds.")
         .defaultValue(20)
         .sliderMax(1000)
         .build()
@@ -220,7 +220,7 @@ public class InventoryTweaks extends Module {
 
     private final Setting<Integer> autoStealInitDelay = sgAutoSteal.add(new IntSetting.Builder()
         .name("initial-delay")
-        .description("The initial delay before stealing in milliseconds. 0 to use normal delay instead.")
+        .description("The initial delay before extracting in milliseconds. 0 to use normal delay instead.")
         .defaultValue(50)
         .sliderMax(1000)
         .build()
@@ -337,7 +337,7 @@ public class InventoryTweaks extends Module {
 
     @EventHandler
     private void onSendPacket(PacketEvent.Send event) {
-        if (!xCarry.get() || !(event.packet instanceof CloseHandledScreenC2SPacket)) return;
+        if (!(event.packet instanceof CloseHandledScreenC2SPacket)) return;
 
         if (((CloseHandledScreenC2SPacketAccessor) event.packet).getSyncId() == mc.player.playerScreenHandler.syncId) {
             invOpened = true;
@@ -419,7 +419,7 @@ public class InventoryTweaks extends Module {
     }
 
     public boolean armorStorage() {
-        return isActive() && armorStorage.get();
+        return false;
     }
 
     public boolean canSteal(ScreenHandler handler) {
