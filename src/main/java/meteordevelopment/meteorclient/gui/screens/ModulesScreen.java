@@ -69,7 +69,7 @@ public class ModulesScreen extends TabScreen {
         w.view.spacing = 0;
 
         for (Module module : Modules.get().getGroup(category)) {
-            if (module.disabled) { continue; }
+            if (!module.isEnabled()) { continue; }
             w.add(theme.module(module)).expandX();
         }
 
@@ -78,7 +78,7 @@ public class ModulesScreen extends TabScreen {
 
     protected boolean hasEnabledModules(Category category) {
         for (Module module : Modules.get().getGroup(category)) {
-            if (module.disabled) { continue; }
+            if (!module.isEnabled()) { continue; }
             return true;
         }
         return false;

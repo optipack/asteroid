@@ -403,6 +403,11 @@ public class Modules extends System<Modules> {
         add(module);
     }
 
+    public void addCheat(Module module) {
+        module.isCheat = true;
+        add(module);
+    }
+
     private void initDisabled() {
         // Combat
         addDisabled(new Hitboxes());
@@ -477,8 +482,8 @@ public class Modules extends System<Modules> {
         add(new BlockSelection());
         add(new Breadcrumbs());
         add(new BreakIndicators());
-        add(new CameraTweaks());
-        add(new Freecam());
+        addCheat(new CameraTweaks());
+        addCheat(new Freecam());
         add(new FreeLook());
         add(new Fullbright());
         add(new HandView());
@@ -486,11 +491,11 @@ public class Modules extends System<Modules> {
         add(new LightOverlay());
         add(new Marker());
         add(new NoRender());
-        add(new Tracers());
+        addCheat(new Tracers());
         add(new Trail());
         add(new UnfocusedCPU());
         add(new WaypointsModule());
-        add(new Xray());
+        addCheat(new Xray());
         add(new Zoom());
         add(new Blur());
         add(new BetterTab());

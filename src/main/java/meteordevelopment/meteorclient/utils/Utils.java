@@ -597,4 +597,11 @@ public class Utils {
         if (text.contains(":") && character == ':') return false;
         return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >= '0' && character <= '9') || character == '.' || character == '-';
     }
+
+    // Perms
+
+    public static boolean cheatsAllowed() {
+        if (mc.player == null) { return false; }
+        return mc.player.hasPermissionLevel(2) || mc.isInSingleplayer();
+    }
 }

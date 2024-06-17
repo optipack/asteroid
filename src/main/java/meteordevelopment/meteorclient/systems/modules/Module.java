@@ -37,6 +37,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
 
     private boolean active;
     public boolean disabled;
+    public boolean isCheat;
 
     public boolean serialize = true;
     public boolean runInMainMenu = false;
@@ -115,8 +116,14 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     }
 
     public boolean isActive() {
-        if (disabled) { return false; }
+        if (!isEnabled()) { return false; }
         return active;
+    }
+
+    public boolean isEnabled() {
+        if (disabled) { return false; }
+        if (!isCheat) { return true; }
+        return Utils.cheatsAllowed();
     }
 
     public String getInfoString() {
