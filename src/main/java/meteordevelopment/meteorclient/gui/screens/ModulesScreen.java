@@ -69,10 +69,19 @@ public class ModulesScreen extends TabScreen {
         w.view.spacing = 0;
 
         for (Module module : Modules.get().getGroup(category)) {
+            if (module.disabled) { continue; }
             w.add(theme.module(module)).expandX();
         }
 
         return w;
+    }
+
+    protected boolean hasEnabledModules(Category category) {
+        for (Module module : Modules.get().getGroup(category)) {
+            if (module.disabled) { continue; }
+            return true;
+        }
+        return false;
     }
 
     // Search
@@ -203,6 +212,7 @@ public class ModulesScreen extends TabScreen {
         @Override
         public void init() {
             for (Category category : Modules.loopCategories()) {
+                if (!hasEnabledModules(category)) { continue; }
                 windows.add(createCategory(this, category));
             }
 

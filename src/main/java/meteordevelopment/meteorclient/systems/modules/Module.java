@@ -36,6 +36,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public final Settings settings = new Settings();
 
     private boolean active;
+    public boolean disabled;
 
     public boolean serialize = true;
     public boolean runInMainMenu = false;
@@ -63,6 +64,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public void onDeactivate() {}
 
     public void toggle() {
+        if (disabled) { return; }
         if (!active) {
             active = true;
             Modules.get().addActive(this);
@@ -113,6 +115,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     }
 
     public boolean isActive() {
+        if (disabled) { return false; }
         return active;
     }
 

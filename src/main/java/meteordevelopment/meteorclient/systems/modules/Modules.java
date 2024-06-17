@@ -86,11 +86,9 @@ public class Modules extends System<Modules> {
 
     @Override
     public void init() {
-        initCombat();
+        initDisabled();
         initPlayer();
-        initMovement();
         initRender();
-        initWorld();
         initMisc();
     }
 
@@ -398,194 +396,113 @@ public class Modules extends System<Modules> {
         module.settings.registerColorSettings(module);
     }
 
-    private void initCombat() {
-        add(new AnchorAura());
-        add(new AntiAnvil());
-        add(new AntiBed());
-        add(new ArrowDodge());
-        add(new AutoAnvil());
-        add(new AutoArmor());
-        add(new AutoCity());
-        add(new AutoEXP());
-        add(new AutoTotem());
-        add(new AutoTrap());
-        add(new AutoWeapon());
-        add(new AutoWeb());
-        add(new BedAura());
-        add(new BowAimbot());
-        add(new BowSpam());
-        add(new Burrow());
-        add(new Criticals());
-        add(new CrystalAura());
-        add(new Hitboxes());
-        add(new HoleFiller());
-        add(new KillAura());
-        add(new Offhand());
-        add(new Quiver());
-        add(new SelfAnvil());
-        add(new SelfTrap());
-        add(new SelfWeb());
-        add(new Surround());
+    public void addDisabled(Module module) {
+        module.disabled = true;
+        add(module);
+    }
+
+    private void initDisabled() {
+        // Combat
+        addDisabled(new Hitboxes());
+
+        // Player
+        addDisabled(new AntiHunger());
+        addDisabled(new FastUse());
+        addDisabled(new BreakDelay());
+        addDisabled(new OffhandCrash());
+        addDisabled(new PotionSaver());
+        addDisabled(new PotionSpoof());
+        addDisabled(new Reach());
+        addDisabled(new SpeedMine());
+        addDisabled(new InstantRebreak());
+
+        // Movement
+        addDisabled(new Anchor());
+        addDisabled(new BoatFly());
+        addDisabled(new ElytraBoost());
+        addDisabled(new ElytraFly());
+        addDisabled(new Flight());
+        addDisabled(new GUIMove());
+        addDisabled(new Jesus());
+        addDisabled(new NoFall());
+        addDisabled(new NoSlow());
+        addDisabled(new Scaffold());
+        addDisabled(new Slippy());
+        addDisabled(new Sneak());
+        addDisabled(new Sprint());
+        addDisabled(new TridentBoost());
+        addDisabled(new Velocity());
+
+        // Render
+        addDisabled(new Chams());
+        addDisabled(new ESP());
+        addDisabled(new Nametags());
+        addDisabled(new Collisions());
+        addDisabled(new AutoBrewer());
+        addDisabled(new AutoSmelter());
+        addDisabled(new StorageESP());
+        addDisabled(new WallHack());
+
+        // World
+        addDisabled(new NoGhostBlocks());
+        addDisabled(new Timer());
+        addDisabled(new HighwayBuilder());
+
+        if (BaritoneUtils.IS_AVAILABLE) {
+            addDisabled(new InfinityMiner());
+        }
+
+        // Misc
+        addDisabled(new AntiPacketKick());
+        addDisabled(new BetterBeacons());
+        addDisabled(new NameProtect());
+        addDisabled(new Notebot());
+        addDisabled(new Swarm());
     }
 
     private void initPlayer() {
-        add(new AntiHunger());
-        add(new AutoEat());
-        add(new AutoFish());
-        add(new AutoGap());
-        add(new AutoMend());
         add(new AutoReplenish());
         add(new AutoTool());
-        add(new ChestSwap());
-        add(new EXPThrower());
         add(new FakePlayer());
-        add(new FastUse());
-        add(new GhostHand());
-        add(new InstantRebreak());
-        add(new LiquidInteract());
-        add(new MiddleClickExtra());
-        add(new BreakDelay());
         add(new NoInteract());
         add(new NoMiningTrace());
-        add(new NoRotate());
-        add(new OffhandCrash());
-        add(new PacketMine());
         add(new Portals());
-        add(new PotionSaver());
-        add(new PotionSpoof());
-        add(new Reach());
         add(new Rotation());
-        add(new SpeedMine());
-    }
-
-    private void initMovement() {
-        add(new AirJump());
-        add(new Anchor());
-        add(new AntiAFK());
-        add(new AntiVoid());
-        add(new AutoJump());
-        add(new AutoWalk());
-        add(new Blink());
-        add(new BoatFly());
-        add(new ClickTP());
-        add(new ElytraBoost());
-        add(new ElytraFly());
-        add(new EntityControl());
-        add(new EntitySpeed());
-        add(new FastClimb());
-        add(new Flight());
-        add(new GUIMove());
-        add(new HighJump());
-        add(new Jesus());
-        add(new LongJump());
-        add(new NoFall());
-        add(new NoSlow());
-        add(new Parkour());
-        add(new ReverseStep());
-        add(new SafeWalk());
-        add(new Scaffold());
-        add(new Slippy());
-        add(new Sneak());
-        add(new Speed());
-        add(new Spider());
-        add(new Sprint());
-        add(new Step());
-        add(new TridentBoost());
-        add(new Velocity());
     }
 
     private void initRender() {
         add(new BetterTooltips());
         add(new BlockSelection());
-        add(new BossStack());
         add(new Breadcrumbs());
         add(new BreakIndicators());
         add(new CameraTweaks());
-        add(new Chams());
-        add(new CityESP());
-        add(new EntityOwner());
-        add(new ESP());
         add(new Freecam());
         add(new FreeLook());
         add(new Fullbright());
         add(new HandView());
-        add(new HoleESP());
-        add(new ItemPhysics());
         add(new ItemHighlight());
         add(new LightOverlay());
-        add(new LogoutSpots());
         add(new Marker());
-        add(new Nametags());
         add(new NoRender());
-        add(new BlockESP());
-        add(new StorageESP());
-        add(new TimeChanger());
         add(new Tracers());
         add(new Trail());
-        add(new Trajectories());
         add(new UnfocusedCPU());
-        add(new VoidESP());
-        add(new WallHack());
         add(new WaypointsModule());
         add(new Xray());
         add(new Zoom());
         add(new Blur());
-        add(new PopChams());
-        add(new TunnelESP());
         add(new BetterTab());
     }
 
-    private void initWorld() {
-        add(new AirPlace());
-        add(new Ambience());
-        add(new Collisions());
-        add(new AutoBreed());
-        add(new AutoBrewer());
-        add(new AutoMount());
-        add(new AutoNametag());
-        add(new AutoShearer());
-        add(new AutoSign());
-        add(new AutoSmelter());
-        add(new BuildHeight());
-        add(new EChestFarmer());
-        add(new EndermanLook());
-        add(new Flamethrower());
-        add(new LiquidFiller());
-        add(new MountBypass());
-        add(new NoGhostBlocks());
-        add(new Nuker());
-        add(new StashFinder());
-        add(new SpawnProofer());
-        add(new Timer());
-        add(new VeinMiner());
-        add(new HighwayBuilder());
-
-        if (BaritoneUtils.IS_AVAILABLE) {
-            add(new Excavator());
-            add(new InfinityMiner());
-        }
-    }
-
     private void initMisc() {
-        add(new Swarm());
-        add(new AntiPacketKick());
         add(new AutoClicker());
-        add(new AutoLog());
         add(new AutoReconnect());
         add(new AutoRespawn());
-        add(new BetterBeacons());
         add(new BetterChat());
-        add(new BookBot());
         add(new DiscordPresence());
-        add(new MessageAura());
-        add(new NameProtect());
-        add(new Notebot());
-        add(new Notifier());
-        add(new PacketCanceller());
         add(new SoundBlocker());
-        add(new Spam());
-        add(new ServerSpoof());
         add(new InventoryTweaks());
+        add(new Ambience());
     }
 
     public static class ModuleRegistry extends SimpleRegistry<Module> {
