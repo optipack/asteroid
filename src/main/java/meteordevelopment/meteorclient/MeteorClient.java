@@ -44,6 +44,7 @@ import java.lang.invoke.MethodHandles;
 
 public class MeteorClient implements ClientModInitializer {
     public static final String MOD_ID = "meteor-client";
+    public static final String CONFIG_DIR = "config/asteroid";
     public static final ModMetadata MOD_META;
     public static final String NAME;
     public static final  Version VERSION;
@@ -54,7 +55,7 @@ public class MeteorClient implements ClientModInitializer {
 
     public static MinecraftClient mc;
     public static final IEventBus EVENT_BUS = new EventBus();
-    public static final File FOLDER = FabricLoader.getInstance().getGameDir().resolve(MOD_ID).toFile();
+    public static final File FOLDER = FabricLoader.getInstance().getGameDir().resolve(CONFIG_DIR).toFile();
     public static final Logger LOG;
 
     static {
