@@ -13,7 +13,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Map;
 
 public class KeyBinds {
-    private static final String CATEGORY = "Meteor Client";
+    private static final String CATEGORY = "Asteroid";
 
     public static KeyBinding OPEN_GUI = new KeyBinding("key.meteor-client.open-gui", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, CATEGORY);
     public static KeyBinding OPEN_COMMANDS = new KeyBinding("key.meteor-client.open-commands", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PERIOD, CATEGORY);

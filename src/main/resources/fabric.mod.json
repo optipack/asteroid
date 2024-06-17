@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "name": "Meteor Client",
+  "name": "Asteroid",
   "id": "meteor-client",
   "version": "${version}",
-  "description": "Based utility mod.",
+  "description": "Utility client with only the utilities. Fork of Meteor Client.",
   "authors": [
     "MineGame159",
     "squidoodly",
-    "seasnail"
+    "seasnail",
+    "Moxvallix"
   ],
   "contact": {
-    "homepage": "https://meteorclient.com",
-    "issues": "https://github.com/MeteorDevelopment/meteor-client/issues",
-    "sources": "https://github.com/MeteorDevelopment/meteor-client",
-    "discord": "https://meteorclient.com/discord"
+    "homepage": "https://github.com/optipack/asteroid",
+    "issues": "https://github.com/optipack/asteroid/issues",
+    "sources": "https://github.com/optipack/asteroid"
   },
   "license": "GPL-3.0",
   "icon": "assets/meteor-client/icon.png",
@@ -38,11 +38,7 @@
     "meteor-client:devbuild": "${devbuild}",
     "meteor-client:color": "145,61,226",
     "meteor-client:commit": "${commit}",
-    "modmenu": {
-      "links": {
-        "modmenu.discord": "https://meteorclient.com/discord"
-      }
-    }
+    "modmenu": {}
   },
   "depends": {
     "java": ">=21",
