@@ -44,6 +44,7 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 ### Render
 - Better Tab: Customisable improvements to the tab menu.
 - Better Tooltips: Shulker box previews, enderchest previews etc.
+- Block ESP\*: Renders outlines around blocks in the whitelist. Helpful for locating a particular block type.
 - Block Selection: Modifies block selection rendering.
 - Blur: Blurs some menu backgrounds.
 - Breadcrumbs: Draws a line behind the player letting them backtrace. Good for players who get lost easily.
