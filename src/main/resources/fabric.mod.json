@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "Asteroid",
-  "id": "meteor-client",
+  "id": "asteroid",
   "version": "${version}",
   "description": "Utility client with only the utilities. Forked from Meteor Client by Moxvallix. Meteor Client by MineGame159, squidoodly and seasnail",
   "authors": [
@@ -16,7 +16,7 @@
     "sources": "https://github.com/optipack/asteroid"
   },
   "license": "GPL-3.0",
-  "icon": "assets/meteor-client/icon.png",
+  "icon": "assets/asteroid/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -35,9 +35,9 @@
   ],
   "accessWidener": "meteor-client.accesswidener",
   "custom": {
-    "meteor-client:devbuild": "${devbuild}",
-    "meteor-client:color": "145,61,226",
-    "meteor-client:commit": "${commit}",
+    "asteroid:devbuild": "${devbuild}",
+    "asteroid:color": "145,61,226",
+    "asteroid:commit": "${commit}",
     "modmenu": {}
   },
   "depends": {
@@ -46,6 +46,7 @@
     "fabricloader": ">=${loader_version}"
   },
   "breaks": {
+    "meteor-client": "*",
     "optifabric": "*",
     "feather": "*",
     "origins": "*",

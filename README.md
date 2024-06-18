@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/optipack/asteroid/main/src/main/resources/assets/meteor-client/textures/meteor.png" alt="asteroid-client-logo" width="15%"/>
+<img src="https://raw.githubusercontent.com/optipack/asteroid/main/src/main/resources/assets/asteroid/textures/meteor.png" alt="asteroid-client-logo" width="15%"/>
 </p>
 
 <h1 align="center">Asteroid</h1>
@@ -53,6 +53,7 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Freecam\*: Frees the players camera to act like spectator mode.
 - Fullbright: Disables lighting, similar to night vision.
 - Hand View: Customize how items are rendered in the players hand.
+- Item Highlight: Highlights particular items in GUIs, to allow you to find the item you are looking for easier.
 - Light Overlay: Renders light levels as an overlay on blocks on the ground.
 - Marker: Render shapes as a client side hologram. Useful for planning out builds.
 - No Render: Prevent things from rendering, like nether fog, particles or even certain entities.
