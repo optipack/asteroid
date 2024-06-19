@@ -26,11 +26,13 @@ public class ModulesCommand extends Command {
     @Override
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
-            ChatUtils.info("--- Modules ((highlight)%d(default)) ---", Modules.get().getCount());
+            ChatUtils.info("--- Modules ((highlight)%d(default)) ---", Modules.get().getCountEnabled());
 
             Modules.loopCategories().forEach(category -> {
+                if (!Modules.get().groupHasEnabledModules(category)) { return; }
+
                 MutableText categoryMessage = Text.literal("");
-                Modules.get().getGroup(category).forEach(module -> categoryMessage.append(getModuleText(module)));
+                Modules.get().getGroupEnabled(category).forEach(module -> categoryMessage.append(getModuleText(module)));
                 ChatUtils.sendMsg(category.name, categoryMessage);
             });
 
@@ -48,7 +50,7 @@ public class ModulesCommand extends Command {
 
         MutableText finalModule = Text.literal(module.title);
         if (!module.isActive()) finalModule.formatted(Formatting.GRAY);
-        if (!module.equals(Modules.get().getGroup(module.category).getLast())) finalModule.append(Text.literal(", ").formatted(Formatting.GRAY));
+        if (!module.equals(Modules.get().getGroupEnabled(module.category).reduce((first, second) -> second).get())) finalModule.append(Text.literal(", ").formatted(Formatting.GRAY));
         finalModule.setStyle(finalModule.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
         return finalModule;

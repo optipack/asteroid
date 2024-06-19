@@ -150,8 +150,20 @@ public class Modules extends System<Modules> {
         return groups.computeIfAbsent(category, category1 -> new ArrayList<>());
     }
 
+    public Stream<Module> getGroupEnabled(Category category) {
+        return getGroup(category).stream().filter(module -> module.isEnabled());
+    }
+
+    public boolean groupHasEnabledModules(Category category) {
+        return getGroupEnabled(category).count() > 0;
+    }
+
     public Collection<Module> getAll() {
         return moduleInstances.values();
+    }
+
+    public Stream<Module> getAllEnabled() {
+        return moduleInstances.values().stream().filter(module -> module.isEnabled());
     }
 
     public List<Module> getList() {
@@ -160,6 +172,10 @@ public class Modules extends System<Modules> {
 
     public int getCount() {
         return moduleInstances.values().size();
+    }
+
+    public int getCountEnabled() {
+        return Math.toIntExact(getAllEnabled().count());
     }
 
     public List<Module> getActive() {

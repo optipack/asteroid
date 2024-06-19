@@ -76,14 +76,6 @@ public class ModulesScreen extends TabScreen {
         return w;
     }
 
-    protected boolean hasEnabledModules(Category category) {
-        for (Module module : Modules.get().getGroup(category)) {
-            if (!module.isEnabled()) { continue; }
-            return true;
-        }
-        return false;
-    }
-
     // Search
 
     protected void createSearchW(WContainer w, String text) {
@@ -212,7 +204,7 @@ public class ModulesScreen extends TabScreen {
         @Override
         public void init() {
             for (Category category : Modules.loopCategories()) {
-                if (!hasEnabledModules(category)) { continue; }
+                if (!Modules.get().groupHasEnabledModules(category)) { continue; }
                 windows.add(createCategory(this, category));
             }
 

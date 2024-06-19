@@ -7,8 +7,6 @@ package meteordevelopment.meteorclient.gui;
 
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.gui.themes.meteor.MeteorGuiTheme;
-import meteordevelopment.meteorclient.gui.themes.meteor.MeteorGuiTheme;
-
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.PreInit;
 import net.minecraft.nbt.NbtCompound;
