@@ -93,7 +93,7 @@ public class InventoryTweaks extends Module {
         .name("sorting-key")
         .description("Key to trigger the sort.")
         .visible(sortingEnabled::get)
-        .defaultValue(Keybind.fromButton(GLFW.GLFW_MOUSE_BUTTON_MIDDLE))
+        .defaultValue(Keybind.fromKey(GLFW.GLFW_KEY_PERIOD))
         .build()
     );
 
