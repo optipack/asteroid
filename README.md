@@ -1,19 +1,7 @@
+<img src="https://cdn.modrinth.com/data/cFGzaOGg/c3e4d8f30f741767471b922167f245d5c8243dcd.png" alt="Asteroid Logo" width=128>
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/optipack/asteroid/main/src/main/resources/assets/asteroid/textures/meteor.png" alt="asteroid-client-logo" width="15%"/>
-</p>
-
-<h1 align="center">Asteroid</h1>
-<p align="center">The utility client for Modrinth.</p>
-
-<div align="center">
-    <img src="https://img.shields.io/github/last-commit/optipack/asteroid" alt="GitHub last commit"/>
-    <img src="https://img.shields.io/github/commit-activity/w/optipack/asteroid" alt="GitHub commit activity"/>
-    <img src="https://img.shields.io/github/contributors/optipack/asteroid" alt="GitHub contributors"/>
-    <br>
-    <img src="https://img.shields.io/github/languages/code-size/optipack/asteroid" alt="GitHub code size in bytes"/>
-    <img src="https://tokei.rs/b1/github/optipack/asteroid" alt="GitHub lines of code"/>
-</div>
+# Asteroid
+The utility client for Modrinth.
 
 ## About
 Asteroid is a fork / distribution of the [Meteor Client](https://meteorclient.com/), a fabric based utility client mod. It has had most of Meteor's anarchy modules removed, in order to focus entirely on the utilities. The few modules remaining that could be considered cheats can only be used when the player is OP, or in singleplayer.
@@ -26,11 +14,14 @@ All credits for the mod itself go to the Meteor client team (MineGame, squidoodl
 Make sure to give them a star on [Github](https://github.com/MeteorDevelopment/meteor-client), or even [Donate](https://meteorclient.com/donate) to them to help fund development.
 
 ## Features
+### Modules
 The following is a list of the modules included in the mod. Most of these share functionality with other mods on the site, so I felt they were fine to leave in.
 
 Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 
-### Player
+`Left Shift` opens the modules menu, allowing the following modules to be toggled.
+
+#### Player
 - Auto Clicker: Automatic clicking on a timer. Useful for mob grinding.
 - Auto Replenish: Replaces a tool / food on the hotbar from the inventory when depleted. Nice QoL.
 - Auto Respawn: Automatically presses the respawn button on death.
@@ -41,7 +32,7 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Portals: Allows players to access their inventory whilst sitting in a nether portal. Not sure why that isn't default tbh.
 - Rotation: Allows the player to lock their yaw and/or pitch.
 
-### Render
+#### Render
 - Better Tab: Customisable improvements to the tab menu.
 - Better Tooltips: Shulker box previews, enderchest previews etc.
 - Block ESP\*: Renders outlines around blocks in the whitelist. Helpful for locating a particular block type.
@@ -65,7 +56,7 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Xray\*: Disables rendering for certain blocks. Useful for finding a particular block.
 - Zoom: Zooms your view similar to how a spyglass would.
 
-### Misc
+#### Misc
 - Ambience: Customize stuff like how the sky renders. Allows for cursed things like End sky in the Overworld. Purely cosmetic.
 - Auto Reconnect: Automatically reconnects a user if they somehow lost connection to a server. Useful for AFK sessions on servers that restart at a set time.
 - Better Chat: Improvements to chat, like prefixes, suffixes and filter regexes.
@@ -73,44 +64,37 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Inventory Tweaks: Inventory improvements like auto transfer, chest sorting, and shift + drag to move items.
 - Sound Blocker: Fine grained control over what sounds should not play. Arguably a good accessibility feature.
 
-## Usage
+### Commands
+The following is a list of commands Asteroid provides. These are all prefixed with a `.`.
 
-### Building
-- Clone this repository
-- Run `./gradlew build`
+- Dismount (`.dismount`): Dismounts the player from their current vehicle.
+- Disconnect (`.disconnect`): Disconnects the player from the server.
+- Drop (`.drop`): Drops items in their inventory.
+- Enchant (`.enchant`): Enchants an item. Can only be used in Creative.
+- Fake Player (`.fake-player`): Manage fake players.
+- Friend (`.friend`): Manage friends.
+- Help (`.help`): Displays a list of commands.
+- NBT (`.nbt`): Modify the nbt of an item. Can only be used in Creative.
+- Peek (`.peek`): Displays the contents of a held shulker box or other container item.
+- Ender Chest (`.ec`): Displays the contents of their Ender Chest.
+- Profiles (`.profiles`): Manage profiles.
+- Reload (`.reload`): Reloads Asteroid.
+- Reset (`.reset`): Allows certain configurations to be reset.
+- Say (`.say`): Sends a message to the chat, allowing use of [StarScript](https://github.com/MeteorDevelopment/starscript/wiki) variables.
+- Server (`.server`): Displays some info about the server.
+- Toggle (`.toggle`): Toggle modules.
+- Settings (`.settings`): Open settings page for modules.
+- Save Map (`.sm`): Save the held map item as an image.
+- Macro (`.macro`): Runs a given macro.
+- Modules (`.modules`): Lists available modules.
+- Binds (`.binds`): Lists bound modules.
+- Give (`.give`): Gives the player an item. Can only be used in Creative.
+- Bind (`.bind`): Binds the given module to the next pressed key.
+- FOV (`.fov`): Adjusts the field of view.
+- Rotation (`.rotation`): Adjusts the rotation of the player.
+- Waypoint (`.wp`): Manage waypoints.
+- Input (`.input`): Simulate a given input.
 
-### Installation
-Follow the [guide](https://meteorclient.com/faq/installation) on the wiki.
-
-## Contributions
-We will review and help with all reasonable pull requests as long as the guidelines below are met.
-
-- The license header must be applied to all java source code files.
-- IDE or system-related files should be added to the `.gitignore`, never committed in pull requests.
-- In general, check existing code to make sure your code matches relatively close to the code already in the project.
-- Favour readability over compactness.
-- If you need help, check out the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) for a reference.
-
-## Bugs and Suggestions
-Bug reports and suggestions should be made in this repo's [issue tracker](https://github.com/optipack/asteroid/issues) using the templates provided.  
-Please provide as much information as you can to best help us understand your issue and give a better chance of it being resolved.
-
-## Donations
-All of our work is completely free and non-profit (donations pay only for hosting costs), therefore we are very grateful for all donations made to support us in running our community.  
-Donations can be made via our [website](https://meteorclient.com/donate) and the minimum amount to get donor benefits is €5.  
-You will be rewarded with a role on our Discord server and a customisable in-game cape.  
-⚠️ _Make sure to create a Meteor account and link your Discord and Minecraft accounts to fully experience your rewards._ ⚠️
-
-## Credits
-[Cabaletta](https://github.com/cabaletta) and [WagYourTail](https://github.com/wagyourtail) for [Baritone](https://github.com/cabaletta/baritone)  
-The [Fabric Team](https://github.com/FabricMC) for [Fabric](https://github.com/FabricMC/fabric-loader) and [Yarn](https://github.com/FabricMC/yarn)
-
-## Licensing
-This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html). 
-
-If you use **ANY** code from the source:
-- You must disclose the source code of your modified work and the source code you took from this project. This means you are not allowed to use code from this project (even partially) in a closed-source and/or obfuscated application.
-- You must state clearly and obviously to all end users that you are using code from this project.
-- Your application must also be licensed under the same license.
-
-*If you have any other questions, check our [FAQ](https://meteorclient.com/faq) or ask in our [Discord](https://meteorclient.com/discord) server.*
+#### Macros
+Asteroid allows players to create macros, which can chain these commands.
+They can be used to automate some tasks, and can be bound to keyboard shortcuts.

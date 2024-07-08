@@ -40,7 +40,6 @@
     "BundleItemMixin",
     "CameraMixin",
     "CapabilityTrackerMixin",
-    "CapeFeatureRendererMixin",
     "ChatHudAccessor",
     "ChatHudLineMixin",
     "ChatHudLineVisibleMixin",
