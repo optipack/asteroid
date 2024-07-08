@@ -35,8 +35,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.NoteBlock;
-import net.minecraft.block.enums.Instrument;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.sound.SoundEvents;
@@ -255,7 +254,7 @@ public class Notebot extends Module {
     public Notebot() {
         super(Categories.Misc, "notebot", "Plays noteblock nicely");
 
-        for (Instrument inst : Instrument.values()) {
+        for (NoteBlockInstrument inst : NoteBlockInstrument.values()) {
             NotebotUtils.OptionalInstrument optionalInstrument = NotebotUtils.OptionalInstrument.fromMinecraftInstrument(inst);
             if (optionalInstrument != null) {
                 sgNoteMap.add(new EnumSetting.Builder<NotebotUtils.OptionalInstrument>()
@@ -474,7 +473,7 @@ public class Notebot extends Module {
         // Modifiable list of unique notes
         List<Note> uniqueNotesToUse = new ArrayList<>(song.getRequirements());
         // A map with noteblocks that have incorrect note level
-        Map<Instrument, List<BlockPos>> incorrectNoteBlocks = new HashMap<>();
+        Map<NoteBlockInstrument, List<BlockPos>> incorrectNoteBlocks = new HashMap<>();
 
         // Check if there are already tuned noteblocks
         for (var entry : scannedNoteblocks.asMap().entrySet()) {
@@ -503,7 +502,7 @@ public class Notebot extends Module {
             List<BlockPos> positions = entry.getValue();
 
             if (mode.get() == NotebotUtils.NotebotMode.ExactInstruments) {
-                Instrument inst = entry.getKey();
+                NoteBlockInstrument inst = entry.getKey();
 
                 List<Note> foundNotes = uniqueNotesToUse.stream()
                     .filter(note -> note.getInstrument() == inst)
@@ -780,9 +779,7 @@ public class Notebot extends Module {
                     if (blockState.getBlock() != Blocks.NOTE_BLOCK) continue;
 
                     // Copied from ServerPlayNetworkHandler#onPlayerInteractBlock
-                    Vec3d vec3d2 = Vec3d.ofCenter(pos);
-                    double sqDist = mc.player.getEyePos().squaredDistanceTo(vec3d2);
-                    if (sqDist > mc.player.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE)) continue;
+                    if (!mc.player.canInteractWithBlockAt(pos, 1)) continue;
 
                     if (!isValidScanSpot(pos)) continue;
 
@@ -790,7 +787,6 @@ public class Notebot extends Module {
                     scannedNoteblocks.put(note, pos);
                 }
             }
-
         }
     }
 
@@ -940,13 +936,13 @@ public class Notebot extends Module {
     }
 
     /**
-     * Gets an Instrument from Note Map
+     * Gets an NoteBlockInstrument from Note Map
      *
      * @param inst An instrument
      * @return A new instrument mapped by instrument given in parameters
      */
     @Nullable
-    public Instrument getMappedInstrument(@NotNull Instrument inst) {
+    public NoteBlockInstrument getMappedInstrument(@NotNull NoteBlockInstrument inst) {
         if (mode.get() == NotebotUtils.NotebotMode.ExactInstruments) {
             NotebotUtils.OptionalInstrument optionalInstrument = (NotebotUtils.OptionalInstrument) sgNoteMap.getByIndex(inst.ordinal()).get();
             return optionalInstrument.toMinecraftInstrument();
