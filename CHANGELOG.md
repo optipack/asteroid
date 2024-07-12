@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2024-07-12
+Major refactor.
+
+### Changed
+- Zoom module now defaults to the keybind `C`, and toggles when the keybind is released.
+
+### Removed
+- Most of the code for the disabled modules has been removed from the codebase. This was done to make dependencies in other modules easier to find.
+
+### Fixed
+- Modules AutoReplenish and BreakIndicator should no longer crash.
+
 ## [0.1.1] - 2024-07-08
 Rebased to Meteor Client v0.5.8, Dev Build #2125
 
