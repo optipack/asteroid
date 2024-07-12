@@ -6,8 +6,6 @@
 package meteordevelopment.meteorclient.mixin;
 
 import meteordevelopment.meteorclient.gui.GuiThemes;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.misc.NameProtect;
 import meteordevelopment.meteorclient.systems.proxies.Proxies;
 import meteordevelopment.meteorclient.systems.proxies.Proxy;
 import meteordevelopment.meteorclient.utils.render.color.Color;
@@ -70,7 +68,7 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
         // Logged in as
         context.drawTextWithShadow(mc.textRenderer, loggedInAs, x, y, textColor1);
-        context.drawTextWithShadow(mc.textRenderer, Modules.get().get(NameProtect.class).getName(client.getSession().getUsername()), x + loggedInAsLength, y, textColor2);
+        context.drawTextWithShadow(mc.textRenderer, client.getSession().getUsername(), x + loggedInAsLength, y, textColor2);
 
         y += textRenderer.fontHeight + 2;
 

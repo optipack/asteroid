@@ -116,20 +116,9 @@ public class Xray extends Module {
     }
 
     public static int getAlpha(BlockState state, BlockPos pos) {
-        WallHack wallHack = Modules.get().get(WallHack.class);
         Xray xray = Modules.get().get(Xray.class);
 
-        if (wallHack.isActive() && wallHack.blocks.get().contains(state.getBlock())) {
-            if (MixinPlugin.isSodiumPresent || (MixinPlugin.isIrisPresent && IrisApi.getInstance().isShaderPackInUse())) return 0;
-
-            int alpha;
-
-            if (xray.isActive()) alpha = xray.opacity.get();
-            else alpha = wallHack.opacity.get();
-
-            return alpha;
-        }
-        else if (xray.isActive() && !wallHack.isActive() && xray.isBlocked(state.getBlock(), pos)) {
+        if (xray.isActive() && xray.isBlocked(state.getBlock(), pos)) {
             return (MixinPlugin.isSodiumPresent || (MixinPlugin.isIrisPresent && IrisApi.getInstance().isShaderPackInUse())) ? 0 : xray.opacity.get();
         }
 

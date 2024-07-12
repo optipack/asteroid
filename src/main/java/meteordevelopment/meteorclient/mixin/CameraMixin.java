@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.systems.modules.render.CameraTweaks;
 import meteordevelopment.meteorclient.systems.modules.render.FreeLook;
 import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
-import meteordevelopment.meteorclient.systems.modules.world.HighwayBuilder;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
@@ -88,10 +87,6 @@ public abstract class CameraMixin implements ICamera {
         if (freecam.isActive()) {
             args.set(0, (float) freecam.getYaw(tickDelta));
             args.set(1, (float) freecam.getPitch(tickDelta));
-        }
-        else if (Modules.get().isActive(HighwayBuilder.class)) {
-            args.set(0, yaw);
-            args.set(1, pitch);
         }
         else if (freeLook.isActive()) {
             args.set(0, freeLook.cameraYaw);

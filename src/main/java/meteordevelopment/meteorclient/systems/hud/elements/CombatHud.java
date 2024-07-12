@@ -40,7 +40,9 @@ import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix4fStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 

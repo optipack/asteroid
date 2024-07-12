@@ -12,8 +12,6 @@ import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.world.PacketMine;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
@@ -23,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 
-import java.util.List;
 import java.util.Map;
 
 public class BreakIndicators extends Module {
@@ -68,10 +65,6 @@ public class BreakIndicators extends Module {
     @EventHandler
     private void onRender(Render3DEvent event) {
         renderNormal(event);
-
-        if (packetMine.get() && !Modules.get().get(PacketMine.class).blocks.isEmpty()) {
-            renderPacket(event, Modules.get().get(PacketMine.class).blocks);
-        }
     }
 
     private void renderNormal(Render3DEvent event) {
@@ -108,23 +101,6 @@ public class BreakIndicators extends Module {
 
             renderBlock(event, orig, pos, shrinkFactor, progress);
         });
-    }
-
-    private void renderPacket(Render3DEvent event, List<PacketMine.MyBlock> blocks) {
-        for (PacketMine.MyBlock block : blocks) {
-            if (block.mining && block.progress != Double.POSITIVE_INFINITY) {
-                VoxelShape shape = block.blockState.getOutlineShape(mc.world, block.blockPos);
-                if (shape == null || shape.isEmpty()) return;
-
-                Box orig = shape.getBoundingBox();
-
-                double progressNormalised = block.progress > 1 ? 1 : block.progress;
-                double shrinkFactor = 1d - progressNormalised;
-                BlockPos pos = block.blockPos;
-
-                renderBlock(event, orig, pos, shrinkFactor, progressNormalised);
-            }
-        }
     }
 
     private void renderBlock(Render3DEvent event, Box orig, BlockPos pos, double shrinkFactor, double progress) {

@@ -8,10 +8,8 @@ package meteordevelopment.meteorclient.asm.transformers;
 import meteordevelopment.meteorclient.asm.AsmTransformer;
 import meteordevelopment.meteorclient.asm.Descriptor;
 import meteordevelopment.meteorclient.asm.MethodInfo;
-import meteordevelopment.meteorclient.systems.modules.misc.AntiPacketKick;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 // Future compatibility
@@ -43,7 +41,6 @@ public class PacketInflaterTransformer extends AsmTransformer {
                     InsnList list = new InsnList();
 
                     list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "meteordevelopment/meteorclient/systems/modules/Modules", "get", "()Lmeteordevelopment/meteorclient/systems/modules/Modules;", false));
-                    list.add(new LdcInsnNode(Type.getType(AntiPacketKick.class)));
                     list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "meteordevelopment/meteorclient/systems/modules/Modules", "isActive", "(Ljava/lang/Class;)Z", false));
 
                     list.add(new JumpInsnNode(Opcodes.IFNE, label));

@@ -14,12 +14,10 @@ import meteordevelopment.meteorclient.events.render.RenderAfterWorldEvent;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.Renderer3D;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.player.LiquidInteract;
 import meteordevelopment.meteorclient.systems.modules.player.NoMiningTrace;
 import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
 import meteordevelopment.meteorclient.systems.modules.render.Zoom;
-import meteordevelopment.meteorclient.systems.modules.world.HighwayBuilder;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.RenderUtils;
@@ -39,7 +37,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -128,17 +125,6 @@ public abstract class GameRendererMixin {
         }
     }
 
-    @Redirect(method = "findCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;raycast(DFZ)Lnet/minecraft/util/hit/HitResult;"))
-    private HitResult updateTargetedEntityEntityRayTraceProxy(Entity entity, double maxDistance, float tickDelta, boolean includeFluids) {
-        if (Modules.get().isActive(LiquidInteract.class)) {
-            HitResult result = entity.raycast(maxDistance, tickDelta, includeFluids);
-            if (result.getType() != HitResult.Type.MISS) return result;
-
-            return entity.raycast(maxDistance, tickDelta, true);
-        }
-        return entity.raycast(maxDistance, tickDelta, includeFluids);
-    }
-
     @Inject(method = "showFloatingItem", at = @At("HEAD"), cancellable = true)
     private void onShowFloatingItem(ItemStack floatingItem, CallbackInfo info) {
         if (floatingItem.getItem() == Items.TOTEM_OF_UNDYING && Modules.get().get(NoRender.class).noTotemAnimation()) {
@@ -159,9 +145,7 @@ public abstract class GameRendererMixin {
     @Inject(method = "updateCrosshairTarget", at = @At("HEAD"), cancellable = true)
     private void updateTargetedEntityInvoke(float tickDelta, CallbackInfo info) {
         Freecam freecam = Modules.get().get(Freecam.class);
-        boolean highwayBuilder = Modules.get().isActive(HighwayBuilder.class);
-
-        if ((freecam.isActive() || highwayBuilder) && client.getCameraEntity() != null && !freecamSet) {
+        if (freecam.isActive() && client.getCameraEntity() != null && !freecamSet) {
             info.cancel();
             Entity cameraE = client.getCameraEntity();
 
@@ -176,19 +160,14 @@ public abstract class GameRendererMixin {
             float prevYaw = cameraE.prevYaw;
             float prevPitch = cameraE.prevPitch;
 
-            if (highwayBuilder) {
-                cameraE.setYaw(camera.getYaw());
-                cameraE.setPitch(camera.getPitch());
-            } else {
-                ((IVec3d) cameraE.getPos()).set(freecam.pos.x, freecam.pos.y - cameraE.getEyeHeight(cameraE.getPose()), freecam.pos.z);
-                cameraE.prevX = freecam.prevPos.x;
-                cameraE.prevY = freecam.prevPos.y - cameraE.getEyeHeight(cameraE.getPose());
-                cameraE.prevZ = freecam.prevPos.z;
-                cameraE.setYaw(freecam.yaw);
-                cameraE.setPitch(freecam.pitch);
-                cameraE.prevYaw = freecam.prevYaw;
-                cameraE.prevPitch = freecam.prevPitch;
-            }
+            ((IVec3d) cameraE.getPos()).set(freecam.pos.x, freecam.pos.y - cameraE.getEyeHeight(cameraE.getPose()), freecam.pos.z);
+            cameraE.prevX = freecam.prevPos.x;
+            cameraE.prevY = freecam.prevPos.y - cameraE.getEyeHeight(cameraE.getPose());
+            cameraE.prevZ = freecam.prevPos.z;
+            cameraE.setYaw(freecam.yaw);
+            cameraE.setPitch(freecam.pitch);
+            cameraE.prevYaw = freecam.prevYaw;
+            cameraE.prevPitch = freecam.prevPitch;
 
             freecamSet = true;
             updateCrosshairTarget(tickDelta);

@@ -20,8 +20,6 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.movement.GUIMove;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
@@ -266,7 +264,6 @@ public class Freecam extends Module {
     @EventHandler
     public void onKey(KeyEvent event) {
         if (Input.isKeyPressed(GLFW.GLFW_KEY_F3)) return;
-        if (checkGuiMove()) return;
 
         boolean cancel = true;
 
@@ -303,8 +300,6 @@ public class Freecam extends Module {
 
     @EventHandler
     private void onMouseButton(MouseButtonEvent event) {
-        if (checkGuiMove()) return;
-
         boolean cancel = true;
 
         if (mc.options.forwardKey.matchesMouse(event.button)) {
@@ -380,13 +375,6 @@ public class Freecam extends Module {
                 info("Toggled off because you died.");
             }
         }
-    }
-
-    private boolean checkGuiMove() {
-        // TODO: This is very bad but you all can cope :cope:
-        GUIMove guiMove = Modules.get().get(GUIMove.class);
-        if (mc.currentScreen != null && !guiMove.isActive()) return true;
-        return (mc.currentScreen != null && guiMove.isActive() && guiMove.skip());
     }
 
     public void changeLookDirection(double deltaX, double deltaY) {

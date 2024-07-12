@@ -8,8 +8,6 @@ package meteordevelopment.meteorclient.utils.render;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.renderer.Renderer3D;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.render.Chams;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -18,7 +16,6 @@ import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -255,46 +252,6 @@ public class WireframeEntityRenderer {
                     }
                 }
             }
-        }
-
-        if (entityRenderer instanceof EndCrystalEntityRenderer renderer) {
-            EndCrystalEntity crystalEntity = (EndCrystalEntity) entity;
-            Chams chams = Modules.get().get(Chams.class);
-            boolean chamsEnabled = chams.isActive() && chams.crystals.get();
-
-            matrices.push();
-            float h;
-            if (chamsEnabled) {
-                float f = (float) crystalEntity.endCrystalAge + event.tickDelta;
-                float g = MathHelper.sin(f * 0.2F) / 2.0F + 0.5F;
-                g = (g * g + g) * 0.4F * chams.crystalsBounce.get().floatValue();
-                h = g - 1.4F;
-            }
-            else h = EndCrystalEntityRenderer.getYOffset(crystalEntity, event.tickDelta);
-            float j = ((float) crystalEntity.endCrystalAge + event.tickDelta) * 3.0F;
-            matrices.push();
-            if (chamsEnabled) matrices.scale(2.0F * chams.crystalsScale.get().floatValue(), 2.0F * chams.crystalsScale.get().floatValue(), 2.0F * chams.crystalsScale.get().floatValue());
-            else matrices.scale(2.0F, 2.0F, 2.0F);
-            matrices.translate(0.0D, -0.5D, 0.0D);
-            if (crystalEntity.shouldShowBottom()) render(event.renderer, renderer.bottom);
-
-            if (chamsEnabled) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j * chams.crystalsRotationSpeed.get().floatValue()));
-            else matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-            matrices.translate(0.0D, 1.5F + h / 2.0F, 0.0D);
-            matrices.multiply(new Quaternionf().setAngleAxis(60.0F, EndCrystalEntityRenderer.SINE_45_DEGREES, 0.0F, EndCrystalEntityRenderer.SINE_45_DEGREES));
-            if (!chamsEnabled || chams.renderFrame1.get()) render(event.renderer, renderer.frame);
-            matrices.scale(0.875F, 0.875F, 0.875F);
-            matrices.multiply(new Quaternionf().setAngleAxis(60.0F, EndCrystalEntityRenderer.SINE_45_DEGREES, 0.0F, EndCrystalEntityRenderer.SINE_45_DEGREES));
-            if (chamsEnabled) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j * chams.crystalsRotationSpeed.get().floatValue()));
-            else matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-            if (!chamsEnabled || chams.renderFrame2.get()) render(event.renderer, renderer.frame);
-            matrices.scale(0.875F, 0.875F, 0.875F);
-            matrices.multiply(new Quaternionf().setAngleAxis(60.0F, EndCrystalEntityRenderer.SINE_45_DEGREES, 0.0F, EndCrystalEntityRenderer.SINE_45_DEGREES));
-            if (chamsEnabled) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j * chams.crystalsRotationSpeed.get().floatValue()));
-            else matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-            if (!chamsEnabled || chams.renderCore.get()) render(event.renderer, renderer.core);
-            matrices.pop();
-            matrices.pop();
         }
         else if (entityRenderer instanceof BoatEntityRenderer renderer) {
             BoatEntity boatEntity = (BoatEntity) entity;

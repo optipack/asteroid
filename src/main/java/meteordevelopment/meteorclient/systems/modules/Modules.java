@@ -16,23 +16,16 @@ import meteordevelopment.meteorclient.events.meteor.ActiveModulesChangedEvent;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
 import meteordevelopment.meteorclient.events.meteor.ModuleBindChangedEvent;
 import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
-import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
-import meteordevelopment.meteorclient.systems.modules.combat.*;
 import meteordevelopment.meteorclient.systems.modules.misc.*;
-import meteordevelopment.meteorclient.systems.modules.misc.swarm.Swarm;
-import meteordevelopment.meteorclient.systems.modules.movement.*;
-import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFly;
-import meteordevelopment.meteorclient.systems.modules.movement.speed.Speed;
 import meteordevelopment.meteorclient.systems.modules.player.*;
 import meteordevelopment.meteorclient.systems.modules.render.*;
 import meteordevelopment.meteorclient.systems.modules.render.blockesp.BlockESP;
 import meteordevelopment.meteorclient.systems.modules.render.marker.Marker;
-import meteordevelopment.meteorclient.systems.modules.world.Timer;
-import meteordevelopment.meteorclient.systems.modules.world.*;
+import meteordevelopment.meteorclient.systems.modules.world.Ambience;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.ValueComparableMap;
@@ -85,7 +78,6 @@ public class Modules extends System<Modules> {
 
     @Override
     public void init() {
-        initDisabled();
         initPlayer();
         initRender();
         initMisc();
@@ -421,65 +413,6 @@ public class Modules extends System<Modules> {
     public void addCheat(Module module) {
         module.isCheat = true;
         add(module);
-    }
-
-    private void initDisabled() {
-        // Combat
-        addDisabled(new Hitboxes());
-
-        // Player
-        addDisabled(new AntiHunger());
-        addDisabled(new FastUse());
-        addDisabled(new BreakDelay());
-        addDisabled(new OffhandCrash());
-        addDisabled(new PotionSaver());
-        addDisabled(new PotionSpoof());
-        addDisabled(new Reach());
-        addDisabled(new SpeedMine());
-        addDisabled(new InstantRebreak());
-
-        // Movement
-        addDisabled(new Anchor());
-        addDisabled(new BoatFly());
-        addDisabled(new ElytraBoost());
-        addDisabled(new ElytraFly());
-        addDisabled(new Flight());
-        addDisabled(new GUIMove());
-        addDisabled(new Jesus());
-        addDisabled(new NoFall());
-        addDisabled(new NoSlow());
-        addDisabled(new Scaffold());
-        addDisabled(new Slippy());
-        addDisabled(new Sneak());
-        addDisabled(new Sprint());
-        addDisabled(new TridentBoost());
-        addDisabled(new Velocity());
-
-        // Render
-        addDisabled(new Chams());
-        addDisabled(new ESP());
-        addDisabled(new Nametags());
-        addDisabled(new Collisions());
-        addDisabled(new AutoBrewer());
-        addDisabled(new AutoSmelter());
-        addDisabled(new StorageESP());
-        addDisabled(new WallHack());
-
-        // World
-        addDisabled(new NoGhostBlocks());
-        addDisabled(new Timer());
-        addDisabled(new HighwayBuilder());
-
-        if (BaritoneUtils.IS_AVAILABLE) {
-            addDisabled(new InfinityMiner());
-        }
-
-        // Misc
-        addDisabled(new AntiPacketKick());
-        addDisabled(new BetterBeacons());
-        addDisabled(new NameProtect());
-        addDisabled(new Notebot());
-        addDisabled(new Swarm());
     }
 
     private void initPlayer() {

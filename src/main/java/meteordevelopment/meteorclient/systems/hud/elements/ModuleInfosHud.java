@@ -9,7 +9,11 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.*;
+import meteordevelopment.meteorclient.systems.modules.misc.DiscordPresence;
+import meteordevelopment.meteorclient.systems.modules.render.BetterTooltips;
+import meteordevelopment.meteorclient.systems.modules.render.Blur;
+import meteordevelopment.meteorclient.systems.modules.render.Fullbright;
+import meteordevelopment.meteorclient.systems.modules.render.Trail;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 
 import java.util.List;
@@ -22,7 +26,7 @@ public class ModuleInfosHud extends HudElement {
     private final Setting<List<Module>> modules = sgGeneral.add(new ModuleListSetting.Builder()
         .name("modules")
         .description("Which modules to display")
-        .defaultValue(KillAura.class, CrystalAura.class, AnchorAura.class, BedAura.class, Surround.class)
+        .defaultValue(Blur.class, Trail.class, DiscordPresence.class, BetterTooltips.class, Fullbright.class)
         .build()
     );
 
