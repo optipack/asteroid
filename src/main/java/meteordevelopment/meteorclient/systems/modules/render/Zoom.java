@@ -16,8 +16,10 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.glfw.GLFW;
 
 public class Zoom extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -69,6 +71,9 @@ public class Zoom extends Module {
     public Zoom() {
         super(Categories.Render, "zoom", "Zooms your view.");
         autoSubscribe = false;
+        keybind.set(Keybind.fromKey(GLFW.GLFW_KEY_C));
+        toggleOnBindRelease = true;
+        chatFeedback = false;
     }
 
     @Override

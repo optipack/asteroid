@@ -32,7 +32,6 @@ public class GuiThemes {
     @PreInit
     public static void init() {
         add(new MeteorGuiTheme());
-        add(new MeteorGuiTheme());
     }
 
     @PostInit
