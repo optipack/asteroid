@@ -61,25 +61,6 @@ public class InventoryTweaks extends Module {
         .build()
     );
 
-    // private final Setting<Boolean> xCarry = sgGeneral.add(new BoolSetting.Builder()
-    //     .name("xcarry")
-    //     .description("Allows you to store four extra item stacks in your crafting grid.")
-    //     .defaultValue(true)
-    //     .onChanged(v -> {
-    //         if (v || !Utils.canUpdate()) return;
-    //         mc.player.networkHandler.sendPacket(new CloseHandledScreenC2SPacket(mc.player.playerScreenHandler.syncId));
-    //         invOpened = false;
-    //     })
-    //     .build()
-    // );
-
-    // private final Setting<Boolean> armorStorage = sgGeneral.add(new BoolSetting.Builder()
-    //     .name("armor-storage")
-    //     .description("Allows you to put normal items in your armor slots.")
-    //     .defaultValue(true)
-    //     .build()
-    // );
-
     // Sorting
 
     private final Setting<Boolean> sortingEnabled = sgSorting.add(new BoolSetting.Builder()
@@ -331,18 +312,6 @@ public class InventoryTweaks extends Module {
     @EventHandler
     private void onDropItems(DropItemsEvent event) {
         if (antiDropItems.get().contains(event.itemStack.getItem())) event.cancel();
-    }
-
-    // XCarry
-
-    @EventHandler
-    private void onSendPacket(PacketEvent.Send event) {
-        if (!(event.packet instanceof CloseHandledScreenC2SPacket)) return;
-
-        if (((CloseHandledScreenC2SPacketAccessor) event.packet).getSyncId() == mc.player.playerScreenHandler.syncId) {
-            invOpened = true;
-            event.cancel();
-        }
     }
 
     // Auto Steal
