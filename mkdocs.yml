@@ -1,0 +1,30 @@
+site_name: Asteroid
+site_url: https://asteroid.moxvallix.com
+repo_url: https://github.com/optipack/asteroid
+repo_name: optipack/asteroid
+extra_css:
+  - overrides/extra.css
+theme:
+  name: material
+  logo: assets/icon.png
+  favicon: assets/icon.png
+  palette: 
+    scheme: slate
+    primary: custom
+    accent: custom
+  features:
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+markdown_extensions:
+  - attr_list
+  - def_list
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.keys
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
