@@ -36,7 +36,7 @@
   "accessWidener": "meteor-client.accesswidener",
   "custom": {
     "asteroid:devbuild": "${devbuild}",
-    "asteroid:color": "145,61,226",
+    "asteroid:color": "196,46,0",
     "asteroid:commit": "${commit}",
     "modmenu": {}
   },
