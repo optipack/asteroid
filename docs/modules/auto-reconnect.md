@@ -1,4 +1,4 @@
-# Auto Clicker
+# Auto Reconnect
 
 <div class="overview" markdown>
 
