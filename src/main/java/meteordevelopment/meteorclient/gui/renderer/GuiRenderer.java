@@ -117,7 +117,7 @@ public class GuiRenderer {
         theme.textRenderer().end(drawContext.getMatrices());
 
         // Title text
-        theme.textRenderer().begin(theme.scale(1.25));
+        theme.textRenderer().begin(theme.scale(theme.titleScale()));
         for (TextOperation text : texts) {
             if (text.title) text.run(textPool);
         }
@@ -199,15 +199,19 @@ public class GuiRenderer {
     public void quad(double x, double y, double width, double height, Color cTopLeft, Color cTopRight, Color cBottomRight, Color cBottomLeft) {
         r.quad(x, y, width, height, cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
+
     public void quad(double x, double y, double width, double height, Color colorLeft, Color colorRight) {
         quad(x, y, width, height, colorLeft, colorRight, colorRight, colorLeft);
     }
+
     public void quad(double x, double y, double width, double height, Color color) {
         quad(x, y, width, height, color, color);
     }
+
     public void quad(WWidget widget, Color color) {
         quad(widget.x, widget.y, widget.width, widget.height, color);
     }
+
     public void quad(double x, double y, double width, double height, GuiTexture texture, Color color) {
         rTex.texQuad(x, y, width, height, texture.get(width, height), color);
     }
@@ -217,7 +221,7 @@ public class GuiRenderer {
     }
 
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3, Color color) {
-        r.triangle(x1, y1, x2, y2, x3, y3 ,color);
+        r.triangle(x1, y1, x2, y2, x3, y3, color);
     }
 
     public void text(String text, double x, double y, Color color, boolean title) {

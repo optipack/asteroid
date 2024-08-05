@@ -60,6 +60,19 @@ public class MeteorGuiTheme extends GuiTheme {
         .build()
     );
 
+    public final Setting<Double> titleScale = sgGeneral.add(new DoubleSetting.Builder()
+        .name("title-scale")
+        .description("Scale of titles.")
+        .defaultValue(1)
+        .min(0.75)
+        .sliderRange(0.75, 2.5)
+        .onSliderRelease()
+        .onChanged(aDouble -> {
+            if (mc.currentScreen instanceof WidgetScreen) ((WidgetScreen) mc.currentScreen).invalidate();
+        })
+        .build()
+    );
+
     public final Setting<AlignmentX> moduleAlignment = sgGeneral.add(new EnumSetting.Builder<AlignmentX>()
         .name("module-alignment")
         .description("How module titles are aligned.")
@@ -104,11 +117,11 @@ public class MeteorGuiTheme extends GuiTheme {
     // Background
 
     public final ThreeStateColorSetting backgroundColor = new ThreeStateColorSetting(
-            sgBackgroundColors,
-            "background",
-            new SettingColor(20, 20, 20, 200),
-            new SettingColor(30, 30, 30, 200),
-            new SettingColor(40, 40, 40, 200)
+        sgBackgroundColors,
+        "background",
+        new SettingColor(20, 20, 20, 200),
+        new SettingColor(30, 30, 30, 200),
+        new SettingColor(40, 40, 40, 200)
     );
 
     public final Setting<SettingColor> moduleBackground = color(sgBackgroundColors, "module-background", "Color of module background when active.", new SettingColor(196, 46, 0));
@@ -116,11 +129,11 @@ public class MeteorGuiTheme extends GuiTheme {
     // Outline
 
     public final ThreeStateColorSetting outlineColor = new ThreeStateColorSetting(
-            sgOutline,
-            "outline",
-            new SettingColor(0, 0, 0),
-            new SettingColor(10, 10, 10),
-            new SettingColor(20, 20, 20)
+        sgOutline,
+        "outline",
+        new SettingColor(0, 0, 0),
+        new SettingColor(10, 10, 10),
+        new SettingColor(20, 20, 20)
     );
 
     // Separator
@@ -132,21 +145,21 @@ public class MeteorGuiTheme extends GuiTheme {
     // Scrollbar
 
     public final ThreeStateColorSetting scrollbarColor = new ThreeStateColorSetting(
-            sgScrollbar,
-            "Scrollbar",
-            new SettingColor(30, 30, 30, 200),
-            new SettingColor(40, 40, 40, 200),
-            new SettingColor(50, 50, 50, 200)
+        sgScrollbar,
+        "Scrollbar",
+        new SettingColor(30, 30, 30, 200),
+        new SettingColor(40, 40, 40, 200),
+        new SettingColor(50, 50, 50, 200)
     );
 
     // Slider
 
     public final ThreeStateColorSetting sliderHandle = new ThreeStateColorSetting(
-            sgSlider,
-            "slider-handle",
-            new SettingColor(97, 0, 0),
-            new SettingColor(196, 46, 0),
-            new SettingColor(196, 46, 0)
+        sgSlider,
+        "slider-handle",
+        new SettingColor(97, 0, 0),
+        new SettingColor(196, 46, 0),
+        new SettingColor(196, 46, 0)
     );
 
     public final Setting<SettingColor> sliderLeft = color(sgSlider, "slider-left", "Color of slider left part.", new SettingColor(97, 0, 0));
@@ -173,11 +186,12 @@ public class MeteorGuiTheme extends GuiTheme {
 
     private Setting<SettingColor> color(SettingGroup group, String name, String description, SettingColor color) {
         return group.add(new ColorSetting.Builder()
-                .name(name + "-color")
-                .description(description)
-                .defaultValue(color)
-                .build());
+            .name(name + "-color")
+            .description(description)
+            .defaultValue(color)
+            .build());
     }
+
     private Setting<SettingColor> color(String name, String description, SettingColor color) {
         return color(sgColors, name, description, color);
     }
@@ -365,6 +379,11 @@ public class MeteorGuiTheme extends GuiTheme {
         }
 
         return scaled;
+    }
+
+    @Override
+    public double titleScale() {
+        return titleScale.get();
     }
 
     @Override
