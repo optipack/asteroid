@@ -49,6 +49,8 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -81,6 +83,8 @@ public class Modules extends System<Modules> {
         initPlayer();
         initRender();
         initMisc();
+
+        blacklist();
     }
 
     @Override
@@ -459,6 +463,40 @@ public class Modules extends System<Modules> {
         add(new SoundBlocker());
         add(new InventoryTweaks());
         add(new Ambience());
+    }
+
+    private void blacklist() {
+        final File blacklistFile = new File(MeteorClient.FOLDER.getPath() + "/blacklist.txt");
+        if (!blacklistFile.exists()) {
+            return;
+        }
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(blacklistFile.toPath());
+        } catch (IOException exception) {
+            return;
+        }
+        lines.forEach(line -> {
+            if (line.trim().startsWith("#")) {
+                return;
+            }
+
+            boolean isCheat = false;
+            String name = line;
+            if (line.endsWith("*")) {
+                isCheat = true;
+                name = line.substring(0, line.length() - 2);
+            }
+            Module module = get(name);
+            if (module == null) {
+                return;
+            }
+            if (isCheat) {
+                module.isCheat = true;
+            } else {
+                module.disabled = true;
+            }
+        });
     }
 
     public static class ModuleRegistry extends SimpleRegistry<Module> {
