@@ -32,7 +32,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Waypoints extends System<Waypoints> implements Iterable<Waypoint> {
-    public static final String[] BUILTIN_ICONS = {"square", "circle", "triangle", "star", "diamond", "skull"};
+    public static final String[] BUILTIN_ICONS = {
+        "banner", "circle", "diamond", "exclamation_mark", "house", "pickaxe",
+        "question_mark", "skull", "square", "star", "triangle_down", "triangle", "x"
+    };
 
     public final Map<String, AbstractTexture> icons = new ConcurrentHashMap<>();
 
