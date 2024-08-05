@@ -34,7 +34,7 @@ public class Config extends System<Config> {
     public final Setting<Boolean> customFont = sgVisual.add(new BoolSetting.Builder()
         .name("custom-font")
         .description("Use a custom font.")
-        .defaultValue(true)
+        .defaultValue(false)
         .build()
     );
 
@@ -52,20 +52,6 @@ public class Config extends System<Config> {
         .defaultValue(0.5)
         .range(0, 10)
         .sliderMax(5)
-        .build()
-    );
-
-    public final Setting<Boolean> titleScreenCredits = sgVisual.add(new BoolSetting.Builder()
-        .name("title-screen-credits")
-        .description("Show Meteor credits on title screen")
-        .defaultValue(true)
-        .build()
-    );
-
-    public final Setting<Boolean> titleScreenSplashes = sgVisual.add(new BoolSetting.Builder()
-        .name("title-screen-splashes")
-        .description("Show Meteor splash texts on title screen")
-        .defaultValue(true)
         .build()
     );
 
