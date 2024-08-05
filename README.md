@@ -13,6 +13,8 @@ All credits for the mod itself go to the Meteor client team (MineGame, squidoodl
 
 Make sure to give them a star on [Github](https://github.com/MeteorDevelopment/meteor-client), or even [Donate](https://meteorclient.com/donate) to them to help fund development.
 
+Updated waypoint textures by Wulfian.
+
 ## Features
 ### Modules
 The following is a list of the modules included in the mod. Most of these share functionality with other mods on the site, so I felt they were fine to leave in.
