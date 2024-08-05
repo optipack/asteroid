@@ -13,7 +13,7 @@ import meteordevelopment.meteorclient.systems.accounts.types.CrackedAccount;
 
 public class AddCrackedAccountScreen extends AddAccountScreen {
     public AddCrackedAccountScreen(GuiTheme theme, AccountsScreen parent) {
-        super(theme, "Add Cracked Account", parent);
+        super(theme, "Add Offline Account", parent);
     }
 
     @Override

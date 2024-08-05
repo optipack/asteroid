@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class CrackedAccount extends Account<CrackedAccount> {
     public CrackedAccount(String name) {
-        super(AccountType.Cracked, name);
+        super(AccountType.Offline, name);
     }
 
     @Override

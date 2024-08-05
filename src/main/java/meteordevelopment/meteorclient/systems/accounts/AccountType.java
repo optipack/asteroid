@@ -6,7 +6,7 @@
 package meteordevelopment.meteorclient.systems.accounts;
 
 public enum AccountType {
-    Cracked,
+    Offline,
     Microsoft,
     TheAltening,
     EasyMC

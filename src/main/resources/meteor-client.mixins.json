@@ -119,6 +119,7 @@
     "MinecraftServerAccessor",
     "MobSpawnerBlockEntityRendererMixin",
     "MouseMixin",
+    "MultiplayerScreenMixin",
     "MutableTextMixin",
     "ParticleManagerMixin",
     "PlayerArmorSlotMixin",
