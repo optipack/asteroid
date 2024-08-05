@@ -69,7 +69,9 @@ public class ModulesScreen extends TabScreen {
         w.view.spacing = 0;
 
         for (Module module : Modules.get().getGroup(category)) {
-            if (!module.isEnabled()) { continue; }
+            if (!module.isEnabled()) {
+                continue;
+            }
             w.add(theme.module(module)).expandX();
         }
 
@@ -193,7 +195,8 @@ public class ModulesScreen extends TabScreen {
     }
 
     @Override
-    public void reload() {}
+    public void reload() {
+    }
 
     // Stuff
 
@@ -204,7 +207,9 @@ public class ModulesScreen extends TabScreen {
         @Override
         public void init() {
             for (Category category : Modules.loopCategories()) {
-                if (!Modules.get().groupHasEnabledModules(category)) { continue; }
+                if (!Modules.get().groupHasEnabledModules(category)) {
+                    continue;
+                }
                 windows.add(createCategory(this, category));
             }
 
@@ -217,8 +222,7 @@ public class ModulesScreen extends TabScreen {
             if (favorites == null) {
                 favorites = createFavorites(this);
                 if (favorites != null) windows.add(favorites.widget());
-            }
-            else {
+            } else {
                 favorites.widget().clear();
 
                 if (!createFavoritesW(favorites.widget())) {
@@ -237,20 +241,34 @@ public class ModulesScreen extends TabScreen {
             double x = this.x + pad;
             double y = this.y;
 
-            for (Cell<?> cell : cells) {
-                double windowWidth = getWindowWidth();
-                double windowHeight = getWindowHeight();
+            double windowWidth = getWindowWidth();
+            double windowHeight = getWindowHeight();
 
-                if (x + cell.width > windowWidth) {
+            double modulesWidth = 0;
+
+            for (Cell<?> cell : cells) {
+                if (modulesWidth + cell.widget().width > windowWidth) {
+                    break;
+                }
+
+                modulesWidth += cell.widget().width + pad;
+            }
+
+            double leftPad = (windowWidth - modulesWidth) / 2;
+            double startPos = x += leftPad;
+            double maxWidth = x + modulesWidth;
+
+            for (Cell<?> cell : cells) {
+                if (x + cell.widget().width > maxWidth) {
                     x = x + pad;
                     y += h;
                 }
 
-                if (x > windowWidth) {
-                    x = windowWidth / 2.0 - cell.width / 2.0;
+                if (x > maxWidth) {
+                    x = startPos;
                     if (x < 0) x = 0;
                 }
-                if (y > windowHeight) {
+                if (y > maxWidth) {
                     y = windowHeight / 2.0 - cell.height / 2.0;
                     if (y < 0) y = 0;
                 }
