@@ -26,5 +26,5 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material
-      - run: echo "asteroid.moxvallix.com" > ./site/CNAME
+      - run: mkdir site && echo "asteroid.moxvallix.com" > ./site/CNAME
       - run: mkdocs gh-deploy --force
