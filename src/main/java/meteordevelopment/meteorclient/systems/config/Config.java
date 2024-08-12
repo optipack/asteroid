@@ -135,7 +135,6 @@ public class Config extends System<Config> {
         .build()
     );
 
-
     public List<String> dontShowAgainPrompts = new ArrayList<>();
 
     public Config() {
