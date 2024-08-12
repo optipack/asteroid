@@ -49,10 +49,14 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public boolean favorite = false;
 
     public Module(Category category, String name, String description) {
+        this(category, name, description, Utils.nameToTitle(name));
+    }
+
+    public Module(Category category, String name, String description, String title) {
         this.mc = MinecraftClient.getInstance();
         this.category = category;
         this.name = name;
-        this.title = Utils.nameToTitle(name);
+        this.title = title;
         this.description = description;
         this.color = Color.fromHsv(Utils.random(0.0, 360.0), 0.35, 1);
     }
@@ -64,27 +68,52 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public void onActivate() {}
     public void onDeactivate() {}
 
-    public void toggle() {
-        if (disabled) { return; }
-        if (!active) {
-            active = true;
-            Modules.get().addActive(this);
+    public void activate() {
+        activate(true);
+    }
 
-            settings.onActivated();
+    public void activate(boolean callback) {
+        if (!isEnabled()) { return; }
+        if (active) { return; }
 
-            if (runInMainMenu || Utils.canUpdate()) {
-                if (autoSubscribe) MeteorClient.EVENT_BUS.subscribe(this);
-                onActivate();
-            }
+        active = true;
+        Modules.get().addActive(this);
+
+        settings.onActivated();
+
+        if (runInMainMenu || Utils.canUpdate()) {
+            if (autoSubscribe) MeteorClient.EVENT_BUS.subscribe(this);
+            if (callback) { onActivate(); }
         }
-        else {
-            if (runInMainMenu || Utils.canUpdate()) {
-                if (autoSubscribe) MeteorClient.EVENT_BUS.unsubscribe(this);
-                onDeactivate();
-            }
+    }
 
-            active = false;
-            Modules.get().removeActive(this);
+    public void deactivate() {
+        deactivate(true);
+    }
+
+    public void deactivate(boolean callback) {
+        if (!active) { return; }
+
+        if (runInMainMenu || Utils.canUpdate()) {
+            if (autoSubscribe) MeteorClient.EVENT_BUS.unsubscribe(this);
+            if (callback) { onDeactivate(); }
+        }
+
+        active = false;
+        Modules.get().removeActive(this);
+    }
+
+    public void toggle() {
+        toggle(true);
+    }
+
+    public void toggle(boolean callback) {
+        if (!isEnabled()) { return; }
+
+        if (!active) {
+            activate(callback);
+        } else {
+            deactivate(callback);
         }
     }
 
