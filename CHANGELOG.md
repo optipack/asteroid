@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+Changes to Meteor are not documented here, only Asteroid specific changes.
+
+## [0.2.2] - 2024-10-03
+Rebased to Meteor Client v0.5.8, Dev Build #2174
+This fixes Indium incompatibility.
+
+### Added
+- Documentation:
+  - Blacklist system now has a dedicated page in the documentation.
+  - Macros now have their own page as well.
+
+### Changed
+- Macros no longer require a keybind to be saved.
+
 ## [0.2.1] - 2024-08-12
 Rebased to Meteor Client v0.5.8, Dev Build #2149
 

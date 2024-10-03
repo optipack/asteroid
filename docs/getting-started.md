@@ -17,4 +17,6 @@ Otherwise, download the latest release of Asteroid for your given version of Min
 Drag this file in to the mods folder of your instance.
 
 ## Using Asteroid
+The main menu for Asteroid can be opened using ++right-shift++.
+
 See the [modules section](modules/index.md) for information on how to use modules.

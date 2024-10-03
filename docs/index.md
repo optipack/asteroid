@@ -19,3 +19,5 @@ Asteroid is developed by [Moxvallix](https://moxvallix.com).
 All credits for Meteor go to the Meteor client team (MineGame, squidoodly and seasnail).
 
 Make sure to give them a star on [Github](https://github.com/MeteorDevelopment/meteor-client), or even [Donate](https://meteorclient.com/donate) to them to help fund development.
+
+If you wish to support Asteroid's development, I have a [ko-fi](https://ko-fi.com/moxvallix).

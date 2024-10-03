@@ -1,7 +1,7 @@
 <img src="https://cdn.modrinth.com/data/cFGzaOGg/c3e4d8f30f741767471b922167f245d5c8243dcd.png" alt="Asteroid Logo" width=128>
 
 # Asteroid
-The utility client for Modrinth.
+The utility client for Modrinth. Press `Right Shift` to open the menu in-game.
 
 ## About
 Asteroid is a fork / distribution of the [Meteor Client](https://meteorclient.com/), a fabric based utility client mod. It has had most of Meteor's anarchy modules removed, in order to focus entirely on the utilities. The few modules remaining that could be considered cheats can only be used when the player is OP, or in singleplayer.
@@ -20,8 +20,6 @@ Updated waypoint textures by Wulfian.
 The following is a list of the modules included in the mod. Most of these share functionality with other mods on the site, so I felt they were fine to leave in.
 
 Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
-
-`Left Shift` opens the modules menu, allowing the following modules to be toggled.
 
 #### Player
 - Auto Clicker: Automatic clicking on a timer. Useful for mob grinding.
