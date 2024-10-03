@@ -27,6 +27,7 @@ import meteordevelopment.starscript.Script;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.Window;
@@ -69,6 +70,10 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
 
     @Shadow
     private int itemUseCooldown;
+
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(CallbackInfo info) {
@@ -177,7 +182,7 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
     // Interface
 
     @Override
-    public void rightClick() {
+    public void meteor_client$rightClick() {
         rightClick = true;
     }
 }
