@@ -6,6 +6,7 @@
 package meteordevelopment.meteorclient.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -29,7 +30,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.profiler.Profilers;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,14 +41,12 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
     @Shadow
     @Final
-    MinecraftClient client;
+    private MinecraftClient client;
 
     @Shadow
     public abstract void updateCrosshairTarget(float tickDelta);
@@ -69,11 +70,11 @@ public abstract class GameRendererMixin {
     @Unique
     private final MatrixStack matrices = new MatrixStack();
 
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = {"ldc=hand"}), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void onRenderWorld(RenderTickCounter tickCounter, CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2, @Local(ordinal = 1) float tickDelta, @Local MatrixStack matrixStack) {
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = {"ldc=hand"}))
+    private void onRenderWorld(RenderTickCounter tickCounter, CallbackInfo ci, @Local(ordinal = 2) Matrix4f matrix4f3, @Local(ordinal = 1) float tickDelta, @Local MatrixStack matrixStack) {
         if (!Utils.canUpdate()) return;
 
-        client.getProfiler().push(MeteorClient.MOD_ID + "_render");
+        Profilers.get().push(MeteorClient.MOD_ID + "_render");
 
         // Create renderer and event
 
@@ -83,11 +84,11 @@ public abstract class GameRendererMixin {
         // Call utility classes
 
         RenderUtils.updateScreenCenter();
-        NametagUtils.onRender(matrix4f2);
+        NametagUtils.onRender(matrix4f3);
 
         // Update model view matrix
 
-        RenderSystem.getModelViewStack().pushMatrix().mul(matrix4f2);
+        RenderSystem.getModelViewStack().pushMatrix().mul(matrix4f3);
 
         matrices.push();
 
@@ -96,8 +97,6 @@ public abstract class GameRendererMixin {
 
         RenderSystem.getModelViewStack().mul(matrices.peek().getPositionMatrix().invert());
         matrices.pop();
-
-        RenderSystem.applyModelViewMatrix();
 
         // Render
 
@@ -108,9 +107,8 @@ public abstract class GameRendererMixin {
         // Revert model view matrix
 
         RenderSystem.getModelViewStack().popMatrix();
-        RenderSystem.applyModelViewMatrix();
 
-        client.getProfiler().pop();
+        Profilers.get().pop();
     }
 
     @Inject(method = "renderWorld", at = @At("TAIL"))
@@ -118,11 +116,12 @@ public abstract class GameRendererMixin {
         MeteorClient.EVENT_BUS.post(RenderAfterWorldEvent.get());
     }
 
-    @Inject(method = "findCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;"), cancellable = true)
-    private void onUpdateTargetedEntity(Entity camera, double blockInteractionRange, double entityInteractionRange, float tickDelta, CallbackInfoReturnable<HitResult> cir, @Local HitResult hitResult) {
-        if (Modules.get().get(NoMiningTrace.class).canWork() && hitResult.getType() == HitResult.Type.BLOCK) {
-            cir.setReturnValue(hitResult);
+    @ModifyReturnValue(method = "findCrosshairTarget", at = @At("RETURN"))
+    private HitResult onUpdateTargetedEntity(HitResult original, @Local HitResult hitResult) {
+        if (Modules.get().get(NoMiningTrace.class).canWork(original instanceof EntityHitResult ehr ? ehr.getEntity() : null) && hitResult.getType() == HitResult.Type.BLOCK) {
+            return hitResult;
         }
+        return original;
     }
 
     @Inject(method = "showFloatingItem", at = @At("HEAD"), cancellable = true)
@@ -159,8 +158,8 @@ public abstract class GameRendererMixin {
             float pitch = cameraE.getPitch();
             float prevYaw = cameraE.prevYaw;
             float prevPitch = cameraE.prevPitch;
-
-            ((IVec3d) cameraE.getPos()).set(freecam.pos.x, freecam.pos.y - cameraE.getEyeHeight(cameraE.getPose()), freecam.pos.z);
+            
+            ((IVec3d) cameraE.getPos()).meteor$set(freecam.pos.x, freecam.pos.y - cameraE.getEyeHeight(cameraE.getPose()), freecam.pos.z);
             cameraE.prevX = freecam.prevPos.x;
             cameraE.prevY = freecam.prevPos.y - cameraE.getEyeHeight(cameraE.getPose());
             cameraE.prevZ = freecam.prevPos.z;
@@ -173,7 +172,7 @@ public abstract class GameRendererMixin {
             updateCrosshairTarget(tickDelta);
             freecamSet = false;
 
-            ((IVec3d) cameraE.getPos()).set(x, y, z);
+            ((IVec3d) cameraE.getPos()).meteor$set(x, y, z);
             cameraE.prevX = prevX;
             cameraE.prevY = prevY;
             cameraE.prevZ = prevZ;

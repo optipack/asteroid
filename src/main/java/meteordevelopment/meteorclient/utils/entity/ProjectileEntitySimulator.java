@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.mixin.ProjectileInGroundAccessor;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.MissHitResult;
+import meteordevelopment.meteorclient.utils.player.Rotations;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.entity.Entity;
@@ -44,7 +45,7 @@ public class ProjectileEntitySimulator {
 
     // held items
 
-    public boolean set(Entity user, ItemStack itemStack, double simulated, boolean accurate, double tickDelta) {
+    public boolean set(Entity user, ItemStack itemStack, double simulated, boolean accurate, float tickDelta) {
         Item item = itemStack.getItem();
 
         switch (item) {
@@ -82,11 +83,19 @@ public class ProjectileEntitySimulator {
         return true;
     }
 
-    public void set(Entity user, double roll, double speed, double simulated, double gravity, double waterDrag, boolean accurate, double tickDelta, EntityType<?> type) {
+    public void set(Entity user, double roll, double speed, double simulated, double gravity, double waterDrag, boolean accurate, float tickDelta, EntityType<?> type) {
         Utils.set(pos, user, tickDelta).add(0, user.getEyeHeight(user.getPose()), 0);
 
-        double yaw = MathHelper.lerp(tickDelta, user.prevYaw, user.getYaw());
-        double pitch = MathHelper.lerp(tickDelta, user.prevPitch, user.getPitch());
+        double yaw;
+        double pitch;
+
+        if (user == mc.player && Rotations.rotating) {
+            yaw = Rotations.serverYaw;
+            pitch = Rotations.serverPitch;
+        } else {
+            yaw = user.getYaw(tickDelta);
+            pitch = user.getPitch(tickDelta);
+        }
 
         double x, y, z;
 
@@ -127,7 +136,7 @@ public class ProjectileEntitySimulator {
 
     public boolean set(Entity entity, boolean accurate) {
         // skip entities in ground
-        if (entity instanceof ProjectileInGroundAccessor ppe && ppe.getInGround()) return false;
+        if (entity instanceof ProjectileInGroundAccessor ppe && ppe.invokeIsInGround()) return false;
 
         if (entity instanceof ArrowEntity) {
             set(entity, 0.05, 0.6, accurate);
@@ -178,9 +187,17 @@ public class ProjectileEntitySimulator {
         this.height = entity.getHeight();
     }
 
-    public void setFishingBobber(Entity user, double tickDelta) {
-        double yaw = MathHelper.lerp(tickDelta, user.prevYaw, user.getYaw());
-        double pitch = MathHelper.lerp(tickDelta, user.prevPitch, user.getPitch());
+    public void setFishingBobber(Entity user, float tickDelta) {
+        double yaw;
+        double pitch;
+
+        if (user == mc.player && Rotations.rotating) {
+            yaw = Rotations.serverYaw;
+            pitch = Rotations.serverPitch;
+        } else {
+            yaw = user.getYaw(tickDelta);
+            pitch = user.getPitch(tickDelta);
+        }
 
         double h = Math.cos(-yaw * 0.017453292F - 3.1415927F);
         double i = Math.sin(-yaw * 0.017453292F - 3.1415927F);
@@ -204,7 +221,7 @@ public class ProjectileEntitySimulator {
 
     public HitResult tick() {
         // Apply velocity
-        ((IVec3d) prevPos3d).set(pos);
+        ((IVec3d) prevPos3d).meteor$set(pos);
         pos.add(velocity);
 
         // Update velocity
@@ -220,7 +237,7 @@ public class ProjectileEntitySimulator {
         if (!mc.world.getChunkManager().isChunkLoaded(chunkX, chunkZ)) return MissHitResult.INSTANCE;
 
         // Check for collision
-        ((IVec3d) pos3d).set(pos);
+        ((IVec3d) pos3d).meteor$set(pos);
         if (pos3d.equals(prevPos3d)) return MissHitResult.INSTANCE;
 
         HitResult hitResult = getCollision();
@@ -240,7 +257,7 @@ public class ProjectileEntitySimulator {
     private HitResult getCollision() {
         HitResult hitResult = mc.world.raycast(new RaycastContext(prevPos3d, pos3d, RaycastContext.ShapeType.COLLIDER, waterDrag == 0 ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, simulatingEntity));
         if (hitResult.getType() != HitResult.Type.MISS) {
-            ((IVec3d) pos3d).set(hitResult.getPos().x, hitResult.getPos().y, hitResult.getPos().z);
+            ((IVec3d) pos3d).meteor$set(hitResult.getPos().x, hitResult.getPos().y, hitResult.getPos().z);
         }
 
         // Vanilla uses the current and next positions to check collisions, we use the previous and current positions

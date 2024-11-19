@@ -27,6 +27,8 @@ public class BaritoneSettings implements IPathManager.ISettings {
     private Setting<Boolean> walkOnWater, walkOnLava;
     private Setting<Boolean> step, noFall;
 
+    private static final Map<String, Double> SETTING_MAX_VALUES = new HashMap<>();
+
     public BaritoneSettings() {
         createWrappers();
     }
@@ -59,6 +61,10 @@ public class BaritoneSettings implements IPathManager.ISettings {
     @Override
     public void save() {
         SettingsUtil.save(BaritoneAPI.getSettings());
+    }
+
+    static {
+        SETTING_MAX_VALUES.put("pathCutoffFactor", 1.0);
     }
 
     // Wrappers
@@ -106,6 +112,8 @@ public class BaritoneSettings implements IPathManager.ISettings {
                         .name(setting.getName())
                         .description(getDescription(setting.getName()))
                         .defaultValue((double) setting.defaultValue)
+                        .max(SETTING_MAX_VALUES.getOrDefault(setting.getName(), 10.0))
+                        .sliderMax(SETTING_MAX_VALUES.getOrDefault(setting.getName(), 10.0))
                         .onChanged(aDouble -> setting.value = aDouble)
                         .onModuleActivated(doubleSetting -> doubleSetting.set((Double) setting.value))
                         .build()
@@ -116,6 +124,8 @@ public class BaritoneSettings implements IPathManager.ISettings {
                         .name(setting.getName())
                         .description(getDescription(setting.getName()))
                         .defaultValue(((Float) setting.defaultValue).doubleValue())
+                        .max(SETTING_MAX_VALUES.getOrDefault(setting.getName(), 10.0))
+                        .sliderMax(SETTING_MAX_VALUES.getOrDefault(setting.getName(), 10.0))
                         .onChanged(aDouble -> setting.value = aDouble.floatValue())
                         .onModuleActivated(doubleSetting -> doubleSetting.set(((Float) setting.value).doubleValue()))
                         .build()

@@ -7,6 +7,7 @@ package meteordevelopment.meteorclient.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.entity.player.ItemUseCrosshairTargetEvent;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
@@ -18,7 +19,6 @@ import meteordevelopment.meteorclient.gui.WidgetScreen;
 import meteordevelopment.meteorclient.mixininterface.IMinecraftClient;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.render.UnfocusedCPU;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.CPSUtils;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
@@ -32,8 +32,9 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.profiler.Profilers;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -61,8 +62,6 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
     @Shadow @Final public GameOptions options;
 
     @Shadow protected abstract void doItemUse();
-    @Shadow public abstract Profiler getProfiler();
-    @Shadow public abstract boolean isWindowFocused();
 
     @Shadow
     @Nullable
@@ -87,9 +86,9 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
 
         doItemUseCalled = false;
 
-        getProfiler().push(MeteorClient.MOD_ID + "_pre_update");
+        Profilers.get().push(MeteorClient.MOD_ID + "_pre_update");
         MeteorClient.EVENT_BUS.post(TickEvent.Pre.get());
-        getProfiler().pop();
+        Profilers.get().pop();
 
         if (rightClick && !doItemUseCalled && interactionManager != null) doItemUse();
         rightClick = false;
@@ -97,9 +96,9 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void onTick(CallbackInfo info) {
-        getProfiler().push(MeteorClient.MOD_ID + "_post_update");
+        Profilers.get().push(MeteorClient.MOD_ID + "_post_update");
         MeteorClient.EVENT_BUS.post(TickEvent.Post.get());
-        getProfiler().pop();
+        Profilers.get().pop();
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"))
@@ -159,11 +158,6 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
         MeteorClient.EVENT_BUS.post(ResolutionChangedEvent.get());
     }
 
-    @Inject(method = "getFramerateLimit", at = @At("HEAD"), cancellable = true)
-    private void onGetFramerateLimit(CallbackInfoReturnable<Integer> info) {
-        if (Modules.get().isActive(UnfocusedCPU.class) && !isWindowFocused()) info.setReturnValue(Math.min(Modules.get().get(UnfocusedCPU.class).fps.get(), this.options.getMaxFps().getValue()));
-    }
-
     // Time delta
 
     @Inject(method = "render", at = @At("HEAD"))
@@ -182,7 +176,7 @@ public abstract class MinecraftClientMixin implements IMinecraftClient {
     // Interface
 
     @Override
-    public void meteor_client$rightClick() {
+    public void meteor$rightClick() {
         rightClick = true;
     }
 }
