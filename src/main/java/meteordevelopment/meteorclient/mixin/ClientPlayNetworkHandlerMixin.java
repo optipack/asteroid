@@ -17,7 +17,6 @@ import meteordevelopment.meteorclient.events.packets.ContainerSlotUpdateEvent;
 import meteordevelopment.meteorclient.events.packets.InventoryEvent;
 import meteordevelopment.meteorclient.events.packets.PlaySoundPacketEvent;
 import meteordevelopment.meteorclient.events.world.ChunkDataEvent;
-import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
@@ -31,7 +30,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.*;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -129,7 +127,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     private void onSendChatMessage(String message, CallbackInfo ci) {
         if (ignoreChatMessage) return;
 
-        if (!message.startsWith(Config.get().prefix.get()) && !(BaritoneUtils.IS_AVAILABLE && message.startsWith(BaritoneUtils.getPrefix()))) {
+        if (!message.startsWith(Config.get().prefix.get())) {
             SendMessageEvent event = MeteorClient.EVENT_BUS.post(SendMessageEvent.get(message));
 
             if (!event.isCancelled()) {

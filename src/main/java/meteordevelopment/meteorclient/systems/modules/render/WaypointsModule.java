@@ -16,7 +16,6 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WMinus;
-import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
@@ -221,17 +220,6 @@ public class WaypointsModule extends Module {
 
             WButton edit = table.add(theme.button(GuiRenderer.EDIT)).widget();
             edit.action = () -> mc.setScreen(new EditWaypointScreen(theme, waypoint, () -> initTable(theme, table)));
-
-            // Goto
-            if (validDim) {
-                WButton gotoB = table.add(theme.button("Goto")).widget();
-                gotoB.action = () -> {
-                    if (PathManagers.get().isPathing())
-                        PathManagers.get().stop();
-
-                    PathManagers.get().moveTo(waypoint.getPos());
-                };
-            }
 
             WMinus remove = table.add(theme.minus()).widget();
             remove.action = () -> {

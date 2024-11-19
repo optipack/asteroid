@@ -6,7 +6,6 @@
 package meteordevelopment.meteorclient.utils.player;
 
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
-import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.utils.Utils;
@@ -59,10 +58,6 @@ public class PlayerUtils {
 
     public static Vec3d getHorizontalVelocity(double bps) {
         float yaw = mc.player.getYaw();
-
-        if (PathManagers.get().isPathing()) {
-            yaw = PathManagers.get().getTargetYaw();
-        }
 
         Vec3d forward = Vec3d.fromPolar(0, yaw);
         Vec3d right = Vec3d.fromPolar(0, yaw + 90);
