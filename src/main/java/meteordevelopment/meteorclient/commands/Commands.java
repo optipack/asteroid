@@ -8,6 +8,7 @@ package meteordevelopment.meteorclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import meteordevelopment.meteorclient.commands.commands.*;
+import meteordevelopment.meteorclient.utils.PostInit;
 import net.minecraft.command.CommandSource;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Commands {
     public static final CommandDispatcher<CommandSource> DISPATCHER = new CommandDispatcher<>();
     public static final List<Command> COMMANDS = new ArrayList<>();
 
+    @PostInit
     public static void init() {
         add(new DismountCommand());
         add(new DisconnectCommand());

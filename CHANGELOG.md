@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.2.3] - 2024-12-03
+Rebased to Meteor Client v0.5.9, Dev Build #2209
+This fixes an issue with `.enchant`.
+
+### Changed
+- Minecraft version now at 1.21.3.
+
+### Removed
+- Baritone support was stripped, as maintaining it was a burden.
+  - This was part of a larger refactor that stripped a lot of unused systems.
+
 ## [0.2.2] - 2024-10-03
 Rebased to Meteor Client v0.5.8, Dev Build #2174
 This fixes Indium incompatibility.
