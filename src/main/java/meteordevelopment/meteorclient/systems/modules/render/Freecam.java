@@ -5,7 +5,8 @@
 
 package meteordevelopment.meteorclient.systems.modules.render;
 
-import meteordevelopment.meteorclient.events.entity.DamageEvent;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import meteordevelopment.meteorclient.events.meteor.KeyEvent;
@@ -29,6 +30,7 @@ import meteordevelopment.orbit.EventPriority;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.HealthUpdateS2CPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -163,7 +165,10 @@ public class Freecam extends Module {
 
     @Override
     public void onDeactivate() {
-        if (reloadChunks.get()) mc.worldRenderer.reload();
+        if (reloadChunks.get()) {
+            if (!RenderSystem.isOnRenderThread()) RenderSystem.recordRenderCall(mc.worldRenderer::reload);
+            else mc.worldRenderer.reload();
+        }
         mc.options.setPerspective(perspective);
         if (staticView.get()) {
             mc.options.getFovEffectScale().setValue(fovScale);
@@ -349,17 +354,6 @@ public class Freecam extends Module {
     }
 
     @EventHandler
-    private void onDamage(DamageEvent event) {
-        if (event.entity.getUuid() == null) return;
-        if (!event.entity.getUuid().equals(mc.player.getUuid())) return;
-
-        if (toggleOnDamage.get()) {
-            toggle();
-            info("Toggled off because you took damage.");
-        }
-    }
-
-    @EventHandler
     private void onGameLeft(GameLeftEvent event) {
         if (!toggleOnLog.get()) return;
 
@@ -375,14 +369,20 @@ public class Freecam extends Module {
                 info("Toggled off because you died.");
             }
         }
+        else if (event.packet instanceof HealthUpdateS2CPacket packet) {
+            if (mc.player.getHealth() - packet.getHealth() > 0 && toggleOnDamage.get()) {
+                toggle();
+                info("Toggled off because you took damage.");
+            }
+        }
     }
 
     public void changeLookDirection(double deltaX, double deltaY) {
         prevYaw = yaw;
         prevPitch = pitch;
 
-        yaw += deltaX;
-        pitch += deltaY;
+        yaw += (float) deltaX;
+        pitch += (float) deltaY;
 
         pitch = MathHelper.clamp(pitch, -90, 90);
     }
