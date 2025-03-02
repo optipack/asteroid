@@ -59,8 +59,10 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyArg(method = "swingHand(Lnet/minecraft/util/Hand;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;swingHand(Lnet/minecraft/util/Hand;Z)V"))
     private Hand setHand(Hand hand) {
+        if ((Object) this != mc.player) return hand;
+
         HandView handView = Modules.get().get(HandView.class);
-        if ((Object) this == mc.player && handView.isActive()) {
+        if (handView.isActive()) {
             if (handView.swingMode.get() == HandView.SwingMode.None) return hand;
             return handView.swingMode.get() == HandView.SwingMode.Offhand ? Hand.OFF_HAND : Hand.MAIN_HAND;
         }
@@ -70,6 +72,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyConstant(method = "getHandSwingDuration", constant = @Constant(intValue = 6))
     private int getHandSwingDuration(int constant) {
         if ((Object) this != mc.player) return constant;
+
         return Modules.get().get(HandView.class).isActive() && mc.options.getPerspective().isFirstPerson() ? Modules.get().get(HandView.class).swingSpeed.get() : constant;
     }
 }

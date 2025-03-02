@@ -40,7 +40,7 @@ public abstract class DisconnectedScreenMixin extends Screen {
     private void addButtons(CallbackInfo ci) {
         AutoReconnect autoReconnect = Modules.get().get(AutoReconnect.class);
 
-        if (autoReconnect.lastServerConnection != null) {
+        if (autoReconnect.lastServerConnection != null && !autoReconnect.button.get()) {
             reconnectBtn = new ButtonWidget.Builder(Text.literal(getText()), button -> tryConnecting()).build();
             grid.add(reconnectBtn);
 

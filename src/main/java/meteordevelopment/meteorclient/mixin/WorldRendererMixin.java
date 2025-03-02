@@ -56,7 +56,7 @@ public abstract class WorldRendererMixin implements IWorldRenderer {
     // No Render
 
     @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
-    private void onRenderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d pos, float tickDelta, Fog fog, CallbackInfo ci) {
+    private void onRenderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d pos, float tickDelta, Fog fog, CallbackInfo ci) {
         if (Modules.get().get(NoRender.class).noWeather()) ci.cancel();
     }
 

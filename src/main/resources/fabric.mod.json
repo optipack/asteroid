@@ -32,14 +32,20 @@
   ],
   "accessWidener": "meteor-client.accesswidener",
   "custom": {
-    "asteroid:devbuild": "${devbuild}",
+    "asteroid:build_number": "${build_number}",
     "asteroid:color": "196,46,0",
     "asteroid:commit": "${commit}",
-    "modmenu": {}
+    "modmenu": {
+      "links": {
+        "modmenu.wiki": "https://asteroid.moxvallix.com/",
+        "modmenu.modrinth": "https://modrinth.com/mod/asteroid",
+        "modmenu.discord": "https://discord.gg/tGfeBxwBpy"
+      }
+    }
   },
   "depends": {
     "java": ">=21",
-    "minecraft": ["1.21.2", "${minecraft_version}"],
+    "minecraft": ["${minecraft_version}"],
     "fabricloader": ">=${loader_version}"
   },
   "breaks": {
@@ -48,7 +54,7 @@
     "feather": "*",
     "origins": "*",
     "wurst": "*",
-    "sodium": "<0.6.0",
+    "sodium": "<0.6.5",
     "morechathistory": "*"
   }
 }

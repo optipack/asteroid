@@ -40,7 +40,6 @@ public class BreakIndicators extends Module {
         .build()
     );
 
-
     private final Setting<SettingColor> startColor = sgGeneral.add(new ColorSetting.Builder()
         .name("start-color")
         .description("The color for the non-broken block.")

@@ -51,7 +51,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
         MeteorClient.EVENT_BUS.post(PlayerTickMovementEvent.get());
     }
 
-
     // Rotations
 
     @Inject(method = "sendMovementPackets", at = @At("HEAD"))
