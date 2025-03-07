@@ -7,14 +7,7 @@ plugins {
 base {
     archivesName = properties["archives_base_name"] as String
     group = properties["maven_group"] as String
-
-    val suffix = if (project.hasProperty("build_number")) {
-        project.findProperty("build_number")
-    } else {
-        "local"
-    }
-
-    version = properties["minecraft_version"] as String + "-" + suffix
+    version = properties["mod_version"] as String
 }
 
 repositories {

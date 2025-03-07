@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.2.4] - 2025-02-03
+Rebased to Meteor Client 1.21.4, Build #22.
+
+Please note that Meteor Client has changed their versioning scheme. Asteroid will continue with its own for now.
+
+### Changed
+- Minecraft version is now at 1.21.4.
+- Improved metadata for Mod Menu.
+
 ## [0.2.3] - 2024-12-03
 Rebased to Meteor Client v0.5.9, Dev Build #2209
 
