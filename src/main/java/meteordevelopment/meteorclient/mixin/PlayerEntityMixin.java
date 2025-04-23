@@ -38,8 +38,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         if (event.isSet()) info.setReturnValue(event.isClip());
     }
 
-    @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at = @At("HEAD"), cancellable = true)
-    private void onDropItem(ItemStack stack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+    @Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
+    private void onDropItem(ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
         if (getWorld().isClient && !stack.isEmpty()) {
             if (MeteorClient.EVENT_BUS.post(DropItemsEvent.get(stack)).isCancelled()) cir.setReturnValue(null);
         }

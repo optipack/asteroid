@@ -5,7 +5,6 @@
 
 package meteordevelopment.meteorclient.systems.modules;
 
-import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
@@ -36,14 +35,6 @@ import meteordevelopment.orbit.EventPriority;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -56,8 +47,6 @@ import java.util.stream.Stream;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class Modules extends System<Modules> {
-    public static final ModuleRegistry REGISTRY = new ModuleRegistry();
-
     private static final List<Category> CATEGORIES = new ArrayList<>();
 
     private final List<Module> modules = new ArrayList<>();
@@ -87,7 +76,7 @@ public class Modules extends System<Modules> {
 
     @Override
     public void load(File folder) {
-        for (Module module : modules) {
+        for (Module module : getAll()) {
             for (SettingGroup group : module.settings) {
                 for (Setting<?> setting : group) setting.reset();
             }
@@ -111,15 +100,6 @@ public class Modules extends System<Modules> {
 
     public static Iterable<Category> loopCategories() {
         return CATEGORIES;
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Category getCategoryByHash(int hash) {
-        for (Category category : CATEGORIES) {
-            if (category.hashCode() == hash) return category;
-        }
-
-        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -160,12 +140,16 @@ public class Modules extends System<Modules> {
         return moduleInstances.values().stream().filter(module -> module.isEnabled());
     }
 
+    /**
+     * @deprecated Use {@link Modules#getAll()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public List<Module> getList() {
         return modules;
     }
 
     public int getCount() {
-        return moduleInstances.values().size();
+        return moduleInstances.size();
     }
 
     public int getCountEnabled() {
@@ -325,7 +309,7 @@ public class Modules extends System<Modules> {
     @EventHandler
     private void onGameJoined(GameJoinedEvent event) {
         synchronized (active) {
-            for (Module module : modules) {
+            for (Module module : getAll()) {
                 if (module.isActive() && !module.runInMainMenu) {
                     MeteorClient.EVENT_BUS.subscribe(module);
                     module.onActivate();
@@ -337,7 +321,7 @@ public class Modules extends System<Modules> {
     @EventHandler
     private void onGameLeft(GameLeftEvent event) {
         synchronized (active) {
-            for (Module module : modules) {
+            for (Module module : getAll()) {
                 if (module.isActive() && !module.runInMainMenu) {
                     MeteorClient.EVENT_BUS.unsubscribe(module);
                     module.onDeactivate();
@@ -348,7 +332,7 @@ public class Modules extends System<Modules> {
 
     public void disableAll() {
         synchronized (active) {
-            for (Module module : modules) {
+            for (Module module : getAll()) {
                 if (module.isActive()) module.toggle();
             }
         }
@@ -372,10 +356,10 @@ public class Modules extends System<Modules> {
     public Modules fromTag(NbtCompound tag) {
         disableAll();
 
-        NbtList modulesTag = tag.getList("modules", 10);
+        NbtList modulesTag = tag.getListOrEmpty("modules");
         for (NbtElement moduleTagI : modulesTag) {
             NbtCompound moduleTag = (NbtCompound) moduleTagI;
-            Module module = get(moduleTag.getString("name"));
+            Module module = get(moduleTag.getString("name", ""));
             if (module != null) module.fromTag(moduleTag);
         }
 
@@ -435,9 +419,11 @@ public class Modules extends System<Modules> {
     }
 
     private void initRender() {
+        add(new BetterTab());
         add(new BetterTooltips());
         addCheat(new BlockESP());
         add(new BlockSelection());
+        add(new BossStack());
         add(new Breadcrumbs());
         add(new BreakIndicators());
         addCheat(new CameraTweaks());
@@ -502,120 +488,5 @@ public class Modules extends System<Modules> {
                 module.disabled = true;
             }
         });
-    }
-
-    public static class ModuleRegistry extends SimpleRegistry<Module> {
-        public ModuleRegistry() {
-            super(RegistryKey.ofRegistry(MeteorClient.identifier("modules")), Lifecycle.stable());
-        }
-
-        @Override
-        public int size() {
-            return Modules.get().getAll().size();
-        }
-
-        @Override
-        public Identifier getId(Module entry) {
-            return null;
-        }
-
-        @Override
-        public Optional<RegistryKey<Module>> getKey(Module entry) {
-            return Optional.empty();
-        }
-
-        @Override
-        public int getRawId(Module entry) {
-            return 0;
-        }
-
-        @Override
-        public Module get(RegistryKey<Module> key) {
-            return null;
-        }
-
-        @Override
-        public Module get(Identifier id) {
-            return null;
-        }
-
-        @Override
-        public Lifecycle getLifecycle() {
-            return null;
-        }
-
-        @Override
-        public Set<Identifier> getIds() {
-            return null;
-        }
-        @Override
-        public boolean containsId(Identifier id) {
-            return false;
-        }
-
-        @Nullable
-        @Override
-        public Module get(int index) {
-            return null;
-        }
-
-        @Override
-        public @NotNull Iterator<Module> iterator() {
-            return new ModuleIterator();
-        }
-
-        @Override
-        public boolean contains(RegistryKey<Module> key) {
-            return false;
-        }
-
-        @Override
-        public Set<Map.Entry<RegistryKey<Module>, Module>> getEntrySet() {
-            return null;
-        }
-
-        @Override
-        public Set<RegistryKey<Module>> getKeys() {
-            return null;
-        }
-
-        @Override
-        public Optional<RegistryEntry.Reference<Module>> getRandom(Random random) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Registry<Module> freeze() {
-            return null;
-        }
-
-        @Override
-        public RegistryEntry.Reference<Module> createEntry(Module value) {
-            return null;
-        }
-
-        @Override
-        public Optional<RegistryEntry.Reference<Module>> getEntry(int rawId) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Stream<RegistryEntry.Reference<Module>> streamEntries() {
-            return null;
-        }
-
-        private static class ModuleIterator implements Iterator<Module> {
-            private final Iterator<Module> iterator = Modules.get().getAll().iterator();
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Module next() {
-                return iterator.next();
-            }
-        }
     }
 }

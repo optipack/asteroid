@@ -62,7 +62,6 @@ public abstract class EntityMixin {
         }
     }
 
-
     @Inject(method = "isGlowing", at = @At("HEAD"), cancellable = true)
     private void isGlowing(CallbackInfoReturnable<Boolean> info) {
         if (Modules.get().get(NoRender.class).noGlowing()) info.setReturnValue(false);

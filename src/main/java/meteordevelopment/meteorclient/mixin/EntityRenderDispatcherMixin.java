@@ -29,7 +29,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
-    @Shadow public Camera camera;
+    @Shadow
+    public Camera camera;
 
     @Inject(method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At("HEAD"), cancellable = true)
     private <E extends Entity, S extends EntityRenderState> void render(E entity, double x, double y, double z, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<? super E, S> renderer, CallbackInfo info) {
@@ -53,7 +54,7 @@ public abstract class EntityRenderDispatcherMixin {
     // Player model rendering in main menu
 
     @Inject(method = "renderShadow", at = @At("HEAD"), cancellable = true)
-    private static void onRenderShadow(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState renderState, float opacity, float tickDelta, WorldView world, float radius, CallbackInfo info) {
+    private static void onRenderShadow(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState renderState, float opacity, WorldView world, float radius, CallbackInfo info) {
         if (Modules.get().get(NoRender.class).noDeadEntities() && renderState instanceof LivingEntityRenderState livingEntityRenderState && livingEntityRenderState.deathTime > 0) info.cancel();
     }
 

@@ -22,7 +22,8 @@ public class AccountCache implements ISerializable<AccountCache> {
     }
 
     public void loadHead() {
-        if (uuid == null || uuid.isBlank()) return;
+        // Disable this, as it is broken rn
+        if (true || uuid == null || uuid.isBlank()) return;
         headTexture = PlayerHeadUtils.fetchHead(UndashedUuid.fromStringLenient(uuid));
     }
 
@@ -38,10 +39,10 @@ public class AccountCache implements ISerializable<AccountCache> {
 
     @Override
     public AccountCache fromTag(NbtCompound tag) {
-        if (!tag.contains("username") || !tag.contains("uuid")) throw new NbtException();
+        if (tag.getString("username").isEmpty() || tag.getString("uuid").isEmpty()) throw new NbtException();
 
-        username = tag.getString("username");
-        uuid = tag.getString("uuid");
+        username = tag.getString("username").get();
+        uuid = tag.getString("uuid").get();
         loadHead();
 
         return this;
