@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.2.5] - 2025-04-24
+Rebased to Meteor Client 1.21.5, Build #12
+
+### Changed
+- Minecraft version is now at 1.21.5.
+
+### Fixed
+- Microsoft account login doesn't work in the current Meteor Client, but it has been patched here.
+  - Note: Player head preview images are incorrect due to the nature of this patch.
+
 ## [0.2.4] - 2025-02-03
 Rebased to Meteor Client 1.21.4, Build #22.
 
