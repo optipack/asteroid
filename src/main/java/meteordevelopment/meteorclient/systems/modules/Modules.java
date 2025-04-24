@@ -442,7 +442,6 @@ public class Modules extends System<Modules> {
         addCheat(new Xray());
         add(new Zoom());
         add(new Blur());
-        add(new BetterTab());
     }
 
     private void initMisc() {
