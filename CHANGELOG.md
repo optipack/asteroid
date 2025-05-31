@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.2.6] - 2025-05-31
+Rebased to Meteor Client 1.21.5, Build #28
+This should allow Asteroid to work with the mod "Hold My Items". Refer to Meteor Client for additional fixes.
+
+### Changed
+- Asteroid should now work with most Meteor Client addons, granted they do not rely on modules removed by Asteroid.
+
 ## [0.2.5] - 2025-04-24
 Rebased to Meteor Client 1.21.5, Build #12
 

@@ -52,11 +52,11 @@
     "fabricloader": ">=${loader_version}"
   },
   "breaks": {
-    "meteor-client": "*",
     "optifabric": "*",
     "feather": "*",
     "origins": "*",
     "sodium": "<0.6.12",
     "morechathistory": "*"
-  }
+  },
+  "provides": ["meteor-client"]
 }
