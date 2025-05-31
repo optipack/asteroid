@@ -1,0 +1,27 @@
+:root {
+  --md-primary-fg-color:        #ff7800;
+  --md-primary-fg-color--light: #c42e00;
+  --md-primary-fg-color--dark:  #ffc800;
+
+  --md-accent-fg-color: #c42e00;
+  --md-accent-fg-color--transparent: #c42e0052;
+}
+
+.md-header {
+  background-color: black;
+}
+
+.grid.grid-sm {
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,6rem),1fr));
+}
+
+@media screen and (min-width: 640px) {
+  .overview {
+    float: left;
+    margin-right: 0.5rem;
+  }
+  
+  .overview > * {
+    margin: 0px;
+  }
+}
