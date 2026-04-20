@@ -5,6 +5,7 @@
 
 package meteordevelopment.meteorclient.gui.themes.meteor;
 
+import com.mojang.blaze3d.platform.MacosUtil;
 import meteordevelopment.meteorclient.gui.DefaultSettingsWidgetFactory;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
@@ -30,7 +31,6 @@ import meteordevelopment.meteorclient.systems.accounts.Account;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
-import net.minecraft.client.util.MacWindowUtil;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -54,8 +54,8 @@ public class MeteorGuiTheme extends GuiTheme {
         .min(0.75)
         .sliderRange(0.75, 4)
         .onSliderRelease()
-        .onChanged(aDouble -> {
-            if (mc.currentScreen instanceof WidgetScreen) ((WidgetScreen) mc.currentScreen).invalidate();
+        .onChanged(_ -> {
+            if (mc.screen instanceof WidgetScreen widgetScreen) widgetScreen.invalidate();
         })
         .build()
     );
@@ -87,15 +87,15 @@ public class MeteorGuiTheme extends GuiTheme {
         .build()
     );
 
-     public final Setting<Boolean> hideHUD = sgGeneral.add(new BoolSetting.Builder()
-         .name("hide-HUD")
-         .description("Hide HUD when in GUI.")
-         .defaultValue(false)
-         .onChanged(v -> {
-             if (mc.currentScreen instanceof WidgetScreen) mc.options.hudHidden = v;
-         })
-         .build()
-     );
+    public final Setting<Boolean> hideHUD = sgGeneral.add(new BoolSetting.Builder()
+        .name("hide-HUD")
+        .description("Hide HUD when in GUI.")
+        .defaultValue(false)
+        .onChanged(v -> {
+            if (mc.screen instanceof WidgetScreen) mc.options.hideGui = v;
+        })
+        .build()
+    );
 
     // Colors
 
@@ -386,8 +386,8 @@ public class MeteorGuiTheme extends GuiTheme {
     public double scale(double value) {
         double scaled = value * scale.get();
 
-        if (MacWindowUtil.IS_MAC) {
-            scaled /= (double) mc.getWindow().getWidth() / mc.getWindow().getFramebufferWidth();
+        if (MacosUtil.IS_MACOS) {
+            scaled /= (double) mc.getWindow().getWidth() / mc.getWindow().getWidth();
         }
 
         return scaled;

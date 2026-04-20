@@ -27,10 +27,10 @@ import meteordevelopment.meteorclient.utils.misc.ISerializable;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.Names;
 import meteordevelopment.meteorclient.utils.render.color.Color;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,15 +94,19 @@ public abstract class GuiTheme implements ISerializable<GuiTheme> {
     }
 
     protected abstract WConfirmedButton confirmedButton(String text, String confirmText, GuiTexture texture);
+
     public WConfirmedButton confirmedButton(String text, String confirmText) {
         return confirmedButton(text, confirmText, null);
     }
+
     public WConfirmedButton confirmedButton(GuiTexture texture) {
         return confirmedButton(null, null, texture);
     }
 
     public abstract WMinus minus();
+
     public abstract WConfirmedMinus confirmedMinus();
+
     public abstract WPlus plus();
 
     public abstract WCheckbox checkbox(boolean checked);
@@ -124,14 +128,15 @@ public abstract class GuiTheme implements ISerializable<GuiTheme> {
     }
 
     public WTextBox textBox(String text, String placeholder) {
-        return textBox(text, placeholder, (text1, c) -> true, null);
+        return textBox(text, placeholder, (_, _) -> true, null);
     }
 
     public WTextBox textBox(String text) {
-        return textBox(text, (text1, c) -> true, null);
+        return textBox(text, (_, _) -> true, null);
     }
 
     public abstract <T> WDropdown<T> dropdown(T[] values, T value);
+
     @SuppressWarnings("unchecked")
     public <T extends Enum<?>> WDropdown<T> dropdown(T value) {
         Class<?> klass = value.getDeclaringClass();
@@ -172,6 +177,7 @@ public abstract class GuiTheme implements ISerializable<GuiTheme> {
     public WWidget module(Module module) {
         return module(module, module.title);
     }
+
     public abstract WWidget module(Module module, String title);
 
     public abstract WQuad quad(Color color);
@@ -343,15 +349,15 @@ public abstract class GuiTheme implements ISerializable<GuiTheme> {
     // Saving / Loading
 
     @Override
-    public NbtCompound toTag() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
 
         tag.putString("name", name);
         tag.put("settings", settings.toTag());
 
-        NbtCompound configs = new NbtCompound();
-        for (String id : windowConfigs.keySet()) {
-            configs.put(id, windowConfigs.get(id).toTag());
+        CompoundTag configs = new CompoundTag();
+        for (var entry : windowConfigs.entrySet()) {
+            configs.put(entry.getKey(), entry.getValue().toTag());
         }
         tag.put("windowConfigs", configs);
 
@@ -359,11 +365,11 @@ public abstract class GuiTheme implements ISerializable<GuiTheme> {
     }
 
     @Override
-    public GuiTheme fromTag(NbtCompound tag) {
+    public GuiTheme fromTag(CompoundTag tag) {
         tag.getCompound("settings").ifPresent(settings::fromTag);
 
         tag.getCompound("windowConfigs").ifPresent(configs -> {
-            for (String id : configs.getKeys()) {
+            for (String id : configs.keySet()) {
                 windowConfigs.put(id, new WindowConfig().fromTag(configs.getCompound(id).get()));
             }
         });

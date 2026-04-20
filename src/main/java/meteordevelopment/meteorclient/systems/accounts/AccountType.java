@@ -8,4 +8,5 @@ package meteordevelopment.meteorclient.systems.accounts;
 public enum AccountType {
     Offline,
     Microsoft,
+    Session
 }

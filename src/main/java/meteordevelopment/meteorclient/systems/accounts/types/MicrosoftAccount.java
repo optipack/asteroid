@@ -9,13 +9,14 @@ import com.mojang.util.UndashedUuid;
 import meteordevelopment.meteorclient.systems.accounts.Account;
 import meteordevelopment.meteorclient.systems.accounts.AccountType;
 import meteordevelopment.meteorclient.systems.accounts.MicrosoftLogin;
-import net.minecraft.client.session.Session;
+import net.minecraft.client.User;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class MicrosoftAccount extends Account<MicrosoftAccount> {
     private @Nullable String token;
+
     public MicrosoftAccount(String refreshToken) {
         super(AccountType.Microsoft, refreshToken);
     }
@@ -31,9 +32,8 @@ public class MicrosoftAccount extends Account<MicrosoftAccount> {
         if (token == null) return false;
 
         super.login();
-//        cache.loadHead();
 
-        setSession(new Session(cache.username, UndashedUuid.fromStringLenient(cache.uuid), token, Optional.empty(), Optional.empty()));
+        setSession(new User(cache.username, UndashedUuid.fromStringLenient(cache.uuid), token, Optional.empty(), Optional.empty()));
         return true;
     }
 
@@ -50,7 +50,7 @@ public class MicrosoftAccount extends Account<MicrosoftAccount> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof MicrosoftAccount)) return false;
-        return ((MicrosoftAccount) o).name.equals(this.name);
+        if (!(o instanceof MicrosoftAccount account)) return false;
+        return account.name.equals(this.name);
     }
 }

@@ -11,12 +11,11 @@ import com.mojang.datafixers.util.Pair;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.mixin.KeyBindingAccessor;
-import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.mixin.KeyMappingAccessor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.command.CommandSource;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.resources.language.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +23,21 @@ import java.util.List;
 public class InputCommand extends Command {
     private static final List<KeypressHandler> activeHandlers = new ArrayList<>();
 
-    private static final List<Pair<KeyBinding, String>> holdKeys = List.of(
-        new Pair<>(mc.options.forwardKey, "forwards"),
-        new Pair<>(mc.options.backKey, "backwards"),
-        new Pair<>(mc.options.leftKey, "left"),
-        new Pair<>(mc.options.rightKey, "right"),
-        new Pair<>(mc.options.jumpKey, "jump"),
-        new Pair<>(mc.options.sneakKey, "sneak"),
-        new Pair<>(mc.options.sprintKey, "sprint"),
-        new Pair<>(mc.options.useKey, "use"),
-        new Pair<>(mc.options.attackKey, "attack")
+    private static final List<Pair<KeyMapping, String>> holdKeys = List.of(
+        new Pair<>(mc.options.keyUp, "forwards"),
+        new Pair<>(mc.options.keyDown, "backwards"),
+        new Pair<>(mc.options.keyLeft, "left"),
+        new Pair<>(mc.options.keyRight, "right"),
+        new Pair<>(mc.options.keyJump, "jump"),
+        new Pair<>(mc.options.keyShift, "sneak"),
+        new Pair<>(mc.options.keySprint, "sprint"),
+        new Pair<>(mc.options.keyUse, "use"),
+        new Pair<>(mc.options.keyAttack, "attack")
     );
 
-    private static final List<Pair<KeyBinding, String>> pressKeys = List.of(
-        new Pair<>(mc.options.swapHandsKey, "swap"),
-        new Pair<>(mc.options.dropKey, "drop")
+    private static final List<Pair<KeyMapping, String>> pressKeys = List.of(
+        new Pair<>(mc.options.keySwapOffhand, "swap"),
+        new Pair<>(mc.options.keyDrop, "drop")
     );
 
     public InputCommand() {
@@ -46,9 +45,13 @@ public class InputCommand extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        for (Pair<KeyBinding, String> keyBinding : holdKeys) {
+    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+        for (Pair<KeyMapping, String> keyBinding : holdKeys) {
             builder.then(literal(keyBinding.getSecond())
+                .executes(_ -> {
+                    activeHandlers.add(new KeypressHandler(keyBinding.getFirst(), 1));
+                    return SINGLE_SUCCESS;
+                })
                 .then(argument("ticks", IntegerArgumentType.integer(1))
                     .executes(context -> {
                         int ticks = context.getArgument("ticks", Integer.class);
@@ -66,25 +69,25 @@ public class InputCommand extends Command {
             );
         }
 
-        for (Pair<KeyBinding, String> keyBinding : pressKeys) {
+        for (Pair<KeyMapping, String> keyBinding : pressKeys) {
             builder.then(literal(keyBinding.getSecond())
-                .executes(context -> {
+                .executes(_ -> {
                     press(keyBinding.getFirst());
                     return SINGLE_SUCCESS;
                 })
             );
         }
 
-        for (KeyBinding keyBinding : mc.options.hotbarKeys) {
-            builder.then(literal(keyBinding.getId().substring(4))
-                .executes(context -> {
+        for (KeyMapping keyBinding : mc.options.keyHotbarSlots) {
+            builder.then(literal(keyBinding.getName().substring(4))
+                .executes(_ -> {
                     press(keyBinding);
                     return SINGLE_SUCCESS;
                 })
             );
         }
 
-        builder.then(literal("clear").executes(ctx -> {
+        builder.then(literal("clear").executes(_ -> {
             if (activeHandlers.isEmpty()) warning("No active keypress handlers.");
             else {
                 info("Cleared all keypress handlers.");
@@ -94,13 +97,13 @@ public class InputCommand extends Command {
             return SINGLE_SUCCESS;
         }));
 
-        builder.then(literal("list").executes(ctx -> {
+        builder.then(literal("list").executes(_ -> {
             if (activeHandlers.isEmpty()) warning("No active keypress handlers.");
             else {
                 info("Active keypress handlers: ");
                 for (int i = 0; i < activeHandlers.size(); i++) {
                     KeypressHandler handler = activeHandlers.get(i);
-                    info("(highlight)%d(default) - (highlight)%s %d(default) ticks left out of (highlight)%d(default).", i, I18n.translate(handler.key.getId()), handler.ticks, handler.totalTicks);
+                    info("(highlight)%d(default) - (highlight)%s %d(default) ticks left out of (highlight)%d(default).", i, I18n.get(handler.key.getName()), handler.ticks, handler.totalTicks);
                 }
             }
             return SINGLE_SUCCESS;
@@ -118,17 +121,17 @@ public class InputCommand extends Command {
         })));
     }
 
-    private static void press(KeyBinding keyBinding) {
-        KeyBindingAccessor accessor = (KeyBindingAccessor) keyBinding;
-        accessor.meteor$setTimesPressed(accessor.meteor$getTimesPressed() + 1);
+    private static void press(KeyMapping keyBinding) {
+        KeyMappingAccessor accessor = (KeyMappingAccessor) keyBinding;
+        accessor.meteor$setClickCount(accessor.meteor$getClickCount() + 1);
     }
 
     private static class KeypressHandler {
-        private final KeyBinding key;
+        private final KeyMapping key;
         private final int totalTicks;
         private int ticks;
 
-        public KeypressHandler(KeyBinding key, int ticks) {
+        public KeypressHandler(KeyMapping key, int ticks) {
             this.key = key;
             this.totalTicks = ticks;
             this.ticks = ticks;
@@ -138,9 +141,12 @@ public class InputCommand extends Command {
 
         @EventHandler
         private void onTick(TickEvent.Post event) {
-            if (ticks-- > 0) key.setPressed(true);
-            else {
-                key.setPressed(false);
+            if (ticks == totalTicks) press(key);
+
+            if (ticks-- > 0) {
+                key.setDown(true);
+            } else {
+                key.setDown(false);
                 MeteorClient.EVENT_BUS.unsubscribe(this);
                 activeHandlers.remove(this);
             }

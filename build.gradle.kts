@@ -46,7 +46,7 @@ val jij: Configuration by configurations.creating
 
 configurations {
     // include mods
-    modImplementation.configure {
+    implementation.configure {
         extendsFrom(modInclude)
     }
     include.configure {
@@ -65,22 +65,20 @@ configurations {
 dependencies {
     // Fabric
     minecraft(libs.minecraft)
-    mappings(variantOf(libs.yarn) { classifier("v2") })
-    modImplementation(libs.fabric.loader)
+    implementation(libs.fabric.loader)
 
     val fapiVersion = libs.versions.fabric.api.get()
     modInclude(fabricApi.module("fabric-api-base", fapiVersion))
-    modInclude(fabricApi.module("fabric-resource-loader-v0", fapiVersion))
     modInclude(fabricApi.module("fabric-resource-loader-v1", fapiVersion))
 
     // Compat fixes
-//    modCompileOnly(fabricApi.module("fabric-renderer-indigo", fapiVersion)) TODO: re-enable when available
-    modCompileOnly(libs.sodium) { isTransitive = false }
-    modCompileOnly(libs.lithium) { isTransitive = false }
-    modCompileOnly(libs.iris) { isTransitive = false }
-    modCompileOnly(libs.viafabricplus) { isTransitive = false }
-    modCompileOnly(libs.viafabricplus.api) { isTransitive = false }
-    modCompileOnly(libs.modmenu)
+    compileOnly(fabricApi.module("fabric-renderer-indigo", fapiVersion))
+    compileOnly(libs.sodium) { isTransitive = false }
+    compileOnly(libs.lithium) { isTransitive = false }
+    compileOnly(libs.iris) { isTransitive = false }
+    compileOnly(libs.viafabricplus) { isTransitive = false }
+    compileOnly(libs.viafabricplus.api) { isTransitive = false }
+    compileOnly(libs.modmenu)
 
     // Libraries (JAR-in-JAR)
     jij(libs.orbit)
@@ -92,56 +90,61 @@ dependencies {
     jij(libs.waybackauthlib)
 }
 
-// Handle transitive dependencies for jar-in-jar
-// Based on implementation from BaseProject by FlorianMichael/EnZaXD
-// Source: https://github.com/FlorianMichael/BaseProject/blob/main/src/main/kotlin/de/florianmichael/baseproject/Fabric.kt
-// Licensed under Apache License 2.0
-afterEvaluate {
-    val jijConfig = configurations.findByName("jij") ?: return@afterEvaluate
-
-    // Dependencies to exclude from jar-in-jar
-    val excluded = setOf(
-        "org.slf4j",    // Logging provided by Minecraft
-        "jsr305"        // Compile time annotations only
-    )
-
-
-    jijConfig.incoming.resolutionResult.allDependencies.forEach { dep ->
-        val requested = dep.requested.displayName
-
-        if (excluded.any { requested.contains(it) }) return@forEach
-
-        val compileOnlyDep = dependencies.create(requested) {
-            isTransitive = false
+sourceSets {
+    val launcher by creating {
+        java {
+            srcDir("src/launcher/java")
         }
+    }
+}
 
-        val implDep = dependencies.create(compileOnlyDep)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get().toInt()))
+    }
 
-        dependencies.add("compileOnlyApi", compileOnlyDep)
-        dependencies.add("implementation", implDep)
-        dependencies.add("include", compileOnlyDep)
+    if (System.getenv("CI")?.toBoolean() == true) {
+        withSourcesJar()
+        withJavadocJar()
+    }
+}
+
+// Handle transitive dependencies for jar-in-jar
+// Based on implementation from BaseProject by florianreuth/EnZaXD
+// Source: https://github.com/florianreuth/BaseProject/blob/main/src/main/kotlin/de/florianreuth/baseproject/Fabric.kt
+// Licensed under Apache License 2.0
+val jijExcluded = setOf("org.slf4j", "jsr305")
+listOf("jij", "implementation", "include").forEach { configName ->
+    configurations.named(configName).configure {
+        defaultDependencies {
+            configurations.getByName("jij").incoming.resolutionResult.allComponents
+                .mapNotNull { it.id as? ModuleComponentIdentifier }
+                .forEach { id ->
+                    val notation = "${id.group}:${id.module}:${id.version}"
+                    if (jijExcluded.none { notation.contains(it) }) {
+                        add(project.dependencies.create(notation) {
+                            isTransitive = false
+                        })
+                    }
+                }
+        }
     }
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/meteor-client.accesswidener")
-}
-
-afterEvaluate {
-    tasks.migrateMappings.configure {
-        outputDir.set(project.file("src/main/java"))
-    }
+    accessWidenerPath = file("src/main/resources/meteor-client.classtweaker")
 }
 
 tasks {
     processResources {
-        val buildNumber = project.findProperty("build_number")?.toString() ?: ""
-        val commit = project.findProperty("commit")?.toString() ?: ""
+        val buildNumber = providers.gradleProperty("build_number").getOrElse("")
+        val commit = providers.gradleProperty("commit").getOrElse("")
 
         val propertyMap = mapOf(
             "version" to project.version,
             "build_number" to buildNumber,
             "commit" to commit,
+            "jdk_version" to libs.versions.jdk.get(),
             "minecraft_version" to libs.versions.minecraft.get(),
             "loader_version" to libs.versions.fabric.loader.get()
         )
@@ -152,6 +155,13 @@ tasks {
         }
     }
 
+    // Compile launcher with Java 8 for backwards compatibility
+    named<JavaCompile>("compileLauncherJava").configure {
+        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+        targetCompatibility = JavaVersion.VERSION_1_8.toString()
+        options.compilerArgs.add("-Xlint:-options")
+    }
+
     jar {
         inputs.property("archivesName", project.base.archivesName.get())
 
@@ -159,29 +169,21 @@ tasks {
             rename { "${it}_${inputs.properties["archivesName"]}" }
         }
 
-        // Launch sub project
-        dependsOn(":launch:compileJava")
-        from(project(":launch").layout.buildDirectory.dir("classes/java/main"))
+        // Include launcher classes
+        from(sourceSets["launcher"].output)
 
         manifest {
             attributes["Main-Class"] = "meteordevelopment.meteorclient.Main"
         }
     }
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-
-        if (System.getenv("CI")?.toBoolean() == true) {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
-
-    withType<JavaCompile> {
-        options.release = 21
-        options.compilerArgs.add("-Xlint:deprecation")
-        options.compilerArgs.add("-Xlint:unchecked")
+    withType<JavaCompile>().configureEach {
+        options.compilerArgs.addAll(
+            listOf(
+                "-Xlint:deprecation",
+                "-Xlint:unchecked"
+            )
+        )
     }
 
     javadoc {
@@ -205,7 +207,7 @@ publishing {
             from(components["java"])
             artifactId = "meteor-client"
 
-            version = libs.versions.minecraft.get() + "-SNAPSHOT"
+            version = "${libs.versions.minecraft.get()}-SNAPSHOT"
         }
     }
 

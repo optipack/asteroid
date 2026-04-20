@@ -12,11 +12,9 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.SlotUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AutoReplenish extends Module {
@@ -84,25 +82,23 @@ public class AutoReplenish extends Module {
 
     public AutoReplenish() {
         super(Categories.Player, "auto-replenish", "Automatically refills items in your hotbar, main hand, or offhand.");
-
-        Arrays.fill(items, Items.AIR.getDefaultStack());
     }
 
     @Override
     public void onActivate() {
         fillItems();
         tickDelayLeft = tickDelay.get();
-        prevHadOpenScreen = mc.currentScreen != null;
+        prevHadOpenScreen = mc.screen != null;
     }
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.currentScreen == null && prevHadOpenScreen) {
+        if (mc.screen == null && prevHadOpenScreen) {
             fillItems();
         }
 
-        prevHadOpenScreen = mc.currentScreen != null;
-        if (mc.player.currentScreenHandler.getStacks().size() != 46 || mc.currentScreen != null) return;
+        prevHadOpenScreen = mc.screen != null;
+        if (mc.player.containerMenu.getItems().size() != 46 || mc.screen != null) return;
 
         if (tickDelayLeft > 0) {
             tickDelayLeft--;
@@ -111,13 +107,13 @@ public class AutoReplenish extends Module {
 
         // Hotbar
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.getInventory().getStack(i);
+            ItemStack stack = mc.player.getInventory().getItem(i);
             checkSlot(i, stack);
         }
 
         // Offhand
         if (offhand.get()) {
-            ItemStack stack = mc.player.getOffHandStack();
+            ItemStack stack = mc.player.getOffhandItem();
             checkSlot(9, stack);
         }
 
@@ -129,7 +125,7 @@ public class AutoReplenish extends Module {
         items[slot] = stack.copy();
 
         if (slot == 9) slot = SlotUtils.OFFHAND;
-        
+
         if (excludedItems.get().contains(stack.getItem())) return;
         if (excludedItems.get().contains(prevStack.getItem())) return;
 
@@ -154,7 +150,8 @@ public class AutoReplenish extends Module {
 
         // eliminate occasional loops when moving items from hotbar to itself
         if (fromSlot == mc.player.getInventory().getSelectedSlot() || fromSlot == SlotUtils.OFFHAND) return;
-        if (fromSlot < 9 && fromSlot < slot && slot != mc.player.getInventory().getSelectedSlot() && slot != SlotUtils.OFFHAND) return;
+        if (fromSlot < 9 && fromSlot < slot && slot != mc.player.getInventory().getSelectedSlot() && slot != SlotUtils.OFFHAND)
+            return;
 
         InvUtils.move().from(fromSlot).to(slot);
     }
@@ -163,13 +160,13 @@ public class AutoReplenish extends Module {
         int slot = -1;
         int count = 0;
 
-        for (int i = mc.player.getInventory().size() - 2; i >= (searchHotbar.get() ? 0 : 9); i--) {
+        for (int i = mc.player.getInventory().getContainerSize() - 2; i >= (searchHotbar.get() ? 0 : 9); i--) {
             if (i == excludedSlot) continue;
 
-            ItemStack stack = mc.player.getInventory().getStack(i);
+            ItemStack stack = mc.player.getInventory().getItem(i);
             if (stack.getItem() != lookForStack.getItem()) continue;
 
-            if (mustCombine && !ItemStack.areItemsAndComponentsEqual(lookForStack, stack)) continue;
+            if (mustCombine && !ItemStack.isSameItemSameComponents(lookForStack, stack)) continue;
             if (sameEnchants.get() && !stack.getEnchantments().equals(lookForStack.getEnchantments())) continue;
 
             if (stack.getCount() > count) {
@@ -185,9 +182,9 @@ public class AutoReplenish extends Module {
 
     private void fillItems() {
         for (int i = 0; i < 9; i++) {
-            items[i] = mc.player.getInventory().getStack(i).copy();
+            items[i] = mc.player.getInventory().getItem(i).copy();
         }
 
-        items[9] = mc.player.getOffHandStack().copy();
+        items[9] = mc.player.getOffhandItem().copy();
     }
 }

@@ -9,6 +9,8 @@ pluginManagement {
     }
 }
 
-rootProject.name = "meteor-client"
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 
-include("launch")
+rootProject.name = "meteor-client"

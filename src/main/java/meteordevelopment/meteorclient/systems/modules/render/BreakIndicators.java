@@ -6,8 +6,8 @@
 package meteordevelopment.meteorclient.systems.modules.render;
 
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
-import meteordevelopment.meteorclient.mixin.ClientPlayerInteractionManagerAccessor;
-import meteordevelopment.meteorclient.mixin.WorldRendererAccessor;
+import meteordevelopment.meteorclient.mixin.LevelRendererAccessor;
+import meteordevelopment.meteorclient.mixin.MultiPlayerGameModeAccessor;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
@@ -15,11 +15,11 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.BlockBreakingInfo;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.BlockDestructionProgress;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
 
@@ -33,24 +33,35 @@ public class BreakIndicators extends Module {
         .build()
     );
 
-    public final Setting<Boolean> packetMine = sgGeneral.add(new BoolSetting.Builder()
-        .name("packet-mine")
-        .description("Whether or not to render blocks being packet mined.")
-        .defaultValue(true)
-        .build()
-    );
-
-    private final Setting<SettingColor> startColor = sgGeneral.add(new ColorSetting.Builder()
-        .name("start-color")
-        .description("The color for the non-broken block.")
+    private final Setting<SettingColor> startSideColor = sgGeneral.add(new ColorSetting.Builder()
+        .name("start-side-color")
+        .description("The side color for the non-broken block.")
         .defaultValue(new SettingColor(25, 252, 25, 150))
+        .visible(() -> shapeMode.get().sides())
         .build()
     );
 
-    private final Setting<SettingColor> endColor = sgGeneral.add(new ColorSetting.Builder()
-        .name("end-color")
-        .description("The color for the fully-broken block.")
+    private final Setting<SettingColor> startLineColor = sgGeneral.add(new ColorSetting.Builder()
+        .name("start-line-color")
+        .description("The line color for the non-broken block.")
+        .defaultValue(new SettingColor(25, 252, 25, 150))
+        .visible(() -> shapeMode.get().lines())
+        .build()
+    );
+
+    private final Setting<SettingColor> endSideColor = sgGeneral.add(new ColorSetting.Builder()
+        .name("end-side-color")
+        .description("The side color for the fully-broken block.")
         .defaultValue(new SettingColor(255, 25, 25, 150))
+        .visible(() -> shapeMode.get().sides())
+        .build()
+    );
+
+    private final Setting<SettingColor> endLineColor = sgGeneral.add(new ColorSetting.Builder()
+        .name("end-line-color")
+        .description("The line color for the fully-broken block.")
+        .defaultValue(new SettingColor(255, 25, 25, 150))
+        .visible(() -> shapeMode.get().lines())
         .build()
     );
 
@@ -67,17 +78,17 @@ public class BreakIndicators extends Module {
     }
 
     private void renderNormal(Render3DEvent event) {
-        Map<Integer, BlockBreakingInfo> blocks = ((WorldRendererAccessor) mc.worldRenderer).meteor$getBlockBreakingInfos();
+        Map<Integer, BlockDestructionProgress> blocks = ((LevelRendererAccessor) mc.levelRenderer).meteor$getDestroyingBlocks();
 
-        float ownBreakingStage = ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).meteor$getBreakingProgress();
-        BlockPos ownBreakingPos = ((ClientPlayerInteractionManagerAccessor) mc.interactionManager).meteor$getCurrentBreakingBlockPos();
+        float ownBreakingStage = ((MultiPlayerGameModeAccessor) mc.gameMode).meteor$getBreakingProgress();
+        BlockPos ownBreakingPos = ((MultiPlayerGameModeAccessor) mc.gameMode).meteor$getCurrentBreakingBlockPos();
 
         if (ownBreakingPos != null && ownBreakingStage > 0) {
-            BlockState state = mc.world.getBlockState(ownBreakingPos);
-            VoxelShape shape = state.getOutlineShape(mc.world, ownBreakingPos);
+            BlockState state = mc.level.getBlockState(ownBreakingPos);
+            VoxelShape shape = state.getShape(mc.level, ownBreakingPos);
             if (shape == null || shape.isEmpty()) return;
 
-            Box orig = shape.getBoundingBox();
+            AABB orig = shape.bounds();
 
             double shrinkFactor = 1d - ownBreakingStage;
 
@@ -86,14 +97,14 @@ public class BreakIndicators extends Module {
 
         blocks.values().forEach(info -> {
             BlockPos pos = info.getPos();
-            int stage = info.getStage();
+            int stage = info.getProgress();
             if (pos.equals(ownBreakingPos)) return;
 
-            BlockState state = mc.world.getBlockState(pos);
-            VoxelShape shape = state.getOutlineShape(mc.world, pos);
+            BlockState state = mc.level.getBlockState(pos);
+            VoxelShape shape = state.getShape(mc.level, pos);
             if (shape == null || shape.isEmpty()) return;
 
-            Box orig = shape.getBoundingBox();
+            AABB orig = shape.bounds();
 
             double shrinkFactor = (9 - (stage + 1)) / 9d;
             double progress = 1d - shrinkFactor;
@@ -102,16 +113,16 @@ public class BreakIndicators extends Module {
         });
     }
 
-    private void renderBlock(Render3DEvent event, Box orig, BlockPos pos, double shrinkFactor, double progress) {
-        Box box = orig.shrink(
-            orig.getLengthX() * shrinkFactor,
-            orig.getLengthY() * shrinkFactor,
-            orig.getLengthZ() * shrinkFactor
+    private void renderBlock(Render3DEvent event, AABB orig, BlockPos pos, double shrinkFactor, double progress) {
+        AABB box = orig.contract(
+            orig.getXsize() * shrinkFactor,
+            orig.getYsize() * shrinkFactor,
+            orig.getZsize() * shrinkFactor
         );
 
-        double xShrink = (orig.getLengthX() * shrinkFactor) / 2;
-        double yShrink = (orig.getLengthY() * shrinkFactor) / 2;
-        double zShrink = (orig.getLengthZ() * shrinkFactor) / 2;
+        double xShrink = (orig.getXsize() * shrinkFactor) / 2;
+        double yShrink = (orig.getYsize() * shrinkFactor) / 2;
+        double zShrink = (orig.getZsize() * shrinkFactor) / 2;
 
         double x1 = pos.getX() + box.minX + xShrink;
         double y1 = pos.getY() + box.minY + yShrink;
@@ -120,8 +131,8 @@ public class BreakIndicators extends Module {
         double y2 = pos.getY() + box.maxY + yShrink;
         double z2 = pos.getZ() + box.maxZ + zShrink;
 
-        Color c1Sides = startColor.get().copy().a(startColor.get().a / 2);
-        Color c2Sides = endColor.get().copy().a(endColor.get().a / 2);
+        Color c1Sides = startSideColor.get().copy().a(startSideColor.get().a / 2);
+        Color c2Sides = endSideColor.get().copy().a(endSideColor.get().a / 2);
 
         cSides.set(
             (int) Math.round(c1Sides.r + (c2Sides.r - c1Sides.r) * progress),
@@ -130,8 +141,8 @@ public class BreakIndicators extends Module {
             (int) Math.round(c1Sides.a + (c2Sides.a - c1Sides.a) * progress)
         );
 
-        Color c1Lines = startColor.get();
-        Color c2Lines = endColor.get();
+        Color c1Lines = startLineColor.get();
+        Color c2Lines = endLineColor.get();
 
         cLines.set(
             (int) Math.round(c1Lines.r + (c2Lines.r - c1Lines.r) * progress),

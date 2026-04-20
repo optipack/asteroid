@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WContainer;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.systems.accounts.Account;
+import meteordevelopment.meteorclient.systems.accounts.AccountType;
 import meteordevelopment.meteorclient.systems.accounts.Accounts;
 import meteordevelopment.meteorclient.utils.misc.NbtUtils;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
@@ -36,6 +37,7 @@ public class AccountsScreen extends WindowScreen {
         WHorizontalList l = add(theme.horizontalList()).expandX().widget();
 
         addButton(l, "Offline", () -> mc.setScreen(new AddCrackedAccountScreen(theme, this)));
+        addButton(l, "Session", () -> mc.setScreen(new AddSessionAccountScreen(theme, this)));
         addButton(l, "Microsoft", () -> mc.setScreen(new AddMicrosoftAccountScreen(theme, this)));
     }
 
@@ -48,23 +50,28 @@ public class AccountsScreen extends WindowScreen {
         if (screen != null) screen.locked = true;
 
         MeteorExecutor.execute(() -> {
-            if (account.fetchInfo()) {
-                account.getCache().loadHead();
-
-                Accounts.get().add(account);
-                if (account.login()) Accounts.get().save();
-
-                if (screen != null) {
-                    screen.locked = false;
-                    screen.close();
-                }
-
-                parent.reload();
-
+            if (!account.fetchInfo()) {
+                mc.execute(() -> {
+                    if (screen != null) screen.locked = false;
+                });
                 return;
             }
 
-            if (screen != null) screen.locked = false;
+            Accounts.get().add(account);
+
+            if (account.login()) {
+                if (account.getType() != AccountType.Offline) account.getCache().loadHead(parent::reload);
+                Accounts.get().save();
+            }
+
+            mc.execute(() -> {
+                if (screen != null) {
+                    screen.locked = false;
+                    screen.onClose();
+                }
+
+                parent.reload();
+            });
         });
     }
 

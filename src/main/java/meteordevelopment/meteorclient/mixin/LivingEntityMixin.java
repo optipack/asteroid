@@ -12,14 +12,17 @@ import meteordevelopment.meteorclient.events.entity.player.CanWalkOnFluidEvent;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.render.HandView;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,40 +33,41 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    @ModifyReturnValue(method = "canWalkOnFluid", at = @At("RETURN"))
-    private boolean onCanWalkOnFluid(boolean original, FluidState fluidState) {
+    @ModifyReturnValue(method = "canStandOnFluid", at = @At("RETURN"))
+    private boolean onCanWalkOnFluid(boolean original, FluidState fluid) {
         if ((Object) this != mc.player) return original;
-        CanWalkOnFluidEvent event = MeteorClient.EVENT_BUS.post(CanWalkOnFluidEvent.get(fluidState));
+        CanWalkOnFluidEvent event = MeteorClient.EVENT_BUS.post(CanWalkOnFluidEvent.get(fluid));
 
         return event.walkOnFluid;
     }
 
     @Inject(method = "spawnItemParticles", at = @At("HEAD"), cancellable = true)
-    private void spawnItemParticles(ItemStack stack, int count, CallbackInfo info) {
+    private void spawnItemParticles(ItemStack itemStack, int count, CallbackInfo ci) {
         NoRender noRender = Modules.get().get(NoRender.class);
-        if (noRender.noEatParticles() && stack.getComponents().contains(DataComponentTypes.FOOD)) info.cancel();
+        if (noRender.noEatParticles() && itemStack.getComponents().has(DataComponents.FOOD)) ci.cancel();
     }
 
-    @ModifyArg(method = "swingHand(Lnet/minecraft/util/Hand;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;swingHand(Lnet/minecraft/util/Hand;Z)V"))
-    private Hand setHand(Hand hand) {
+    @ModifyVariable(method = "swing(Lnet/minecraft/world/InteractionHand;)V", at = @At("HEAD"), argsOnly = true, name = "hand")
+    private InteractionHand setHand(InteractionHand hand) {
         if ((Object) this != mc.player) return hand;
 
         HandView handView = Modules.get().get(HandView.class);
         if (handView.isActive()) {
             if (handView.swingMode.get() == HandView.SwingMode.None) return hand;
-            return handView.swingMode.get() == HandView.SwingMode.Offhand ? Hand.OFF_HAND : Hand.MAIN_HAND;
+            return handView.swingMode.get() == HandView.SwingMode.Offhand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         }
+
         return hand;
     }
 
-    @ModifyExpressionValue(method = "getHandSwingDuration", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/type/SwingAnimationComponent;duration()I"))
+    @ModifyExpressionValue(method = "getCurrentSwingDuration", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/SwingAnimation;duration()I"))
     private int getHandSwingDuration(int original) {
         if ((Object) this != mc.player) return original;
 
-        return Modules.get().get(HandView.class).isActive() && mc.options.getPerspective().isFirstPerson() ? Modules.get().get(HandView.class).swingSpeed.get() : original;
+        return Modules.get().get(HandView.class).isActive() && mc.options.getCameraType().isFirstPerson() ? Modules.get().get(HandView.class).swingSpeed.get() : original;
     }
 }

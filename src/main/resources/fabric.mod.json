@@ -5,10 +5,10 @@
   "version": "${version}",
   "description": "Utility client with only the utilities. Forked from Meteor Client by Moxvallix. Meteor Client by MineGame159, squidoodly and seasnail",
   "authors": [
+    "Moxvallix",
     "MineGame159",
     "squidoodly",
-    "seasnail",
-    "Moxvallix"
+    "seasnail"
   ],
   "contact": {
     "homepage": "https://github.com/optipack/asteroid",
@@ -23,7 +23,7 @@
       "meteordevelopment.meteorclient.MeteorClient"
     ],
     "modmenu": [
-      "meteordevelopment.meteorclient.ModMenuIntegration"
+      "meteordevelopment.meteorclient.modintegration.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -33,7 +33,7 @@
     "meteor-client-lithium.mixins.json",
     "meteor-client-viafabricplus.mixins.json"
   ],
-  "accessWidener": "meteor-client.accesswidener",
+  "accessWidener": "meteor-client.classtweaker",
   "custom": {
     "asteroid:build_number": "${build_number}",
     "asteroid:color": "196,46,0",
@@ -44,19 +44,27 @@
         "modmenu.modrinth": "https://modrinth.com/mod/asteroid",
         "modmenu.discord": "https://discord.gg/tGfeBxwBpy"
       }
+    },
+    "badoptimizations:cache_hooks": {
+      "lightmap": "meteordevelopment.meteorclient.modintegration.BadOptimizationsHook"
     }
   },
   "depends": {
-    "java": ">=21",
-    "minecraft": ["${minecraft_version}"],
+    "java": ">=${jdk_version}",
+    "minecraft": [
+      "26.1",
+      "26.1.1",
+      "${minecraft_version}"
+    ],
     "fabricloader": ">=${loader_version}"
   },
   "breaks": {
     "optifabric": "*",
     "feather": "*",
     "origins": "*",
-    "sodium": "<0.7.0",
-    "morechathistory": "*"
+    "sodium": "<0.8.7",
+    "morechathistory": "*",
+    "lithium": "<0.21.3"
   },
   "provides": ["meteor-client"]
 }
