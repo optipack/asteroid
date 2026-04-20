@@ -41,7 +41,6 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     // meteor is already initialised at this point
     @Inject(method = "<init>", at = @At("TAIL"))
     private void onInit(EntityRendererProvider.Context context, CallbackInfo ci) {
-        esp = Modules.get().get(ESP.class);
         noRender = Modules.get().get(NoRender.class);
     }
 

@@ -133,7 +133,7 @@ public class Xray extends Module {
         Xray xray = Modules.get().get(Xray.class);
         Block block = state.getBlock();
 
-        if (xray.isActive() && !wallHack.isActive() && xray.isBlocked(block, pos)) {
+        if (xray.isActive() && xray.isBlocked(block, pos)) {
             return (MixinPlugin.isIrisPresent && IrisApi.getInstance().isShaderPackInUse()) ? 0 : xray.opacity.get();
         }
 
@@ -141,15 +141,10 @@ public class Xray extends Module {
     }
 
     public static int getFluidAlpha(FluidState state, BlockPos pos) {
-        WallHack wallHack = Modules.get().get(WallHack.class);
         Xray xray = Modules.get().get(Xray.class);
         Block fluidBlock = state.createLegacyBlock().getBlock();
 
-        if (wallHack.isActive() && wallHack.blocks.get().contains(fluidBlock)) {
-            if (MixinPlugin.isIrisPresent && IrisApi.getInstance().isShaderPackInUse()) return 0;
-
-            return xray.isActive() ? xray.opacity.get() : wallHack.opacity.get();
-        } else if (xray.isActive() && !wallHack.isActive() && xray.shouldApplyFluidOpacity(state) && xray.isBlocked(fluidBlock, pos)) {
+        if (xray.isActive() && xray.shouldApplyFluidOpacity(state) && xray.isBlocked(fluidBlock, pos)) {
             return (MixinPlugin.isIrisPresent && IrisApi.getInstance().isShaderPackInUse()) ? 0 : xray.opacity.get();
         }
 

@@ -12,6 +12,7 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.mixin.KeyMappingAccessor;
+import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
@@ -57,7 +58,7 @@ public class InputCommand extends Command {
                         int ticks = context.getArgument("ticks", Integer.class);
 
                         // 1 tick attack should do a "punch"
-                        if (keyBinding.getFirst() == mc.options.attackKey && ticks == 1) {
+                        if (keyBinding.getFirst() == mc.options.keyAttack && ticks == 1) {
                             Utils.leftClick();
                             return SINGLE_SUCCESS;
                         }

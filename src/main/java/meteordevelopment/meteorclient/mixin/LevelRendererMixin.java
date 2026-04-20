@@ -26,7 +26,6 @@ import meteordevelopment.meteorclient.utils.render.NoopOutlineVertexConsumerProv
 import meteordevelopment.meteorclient.utils.render.WrapperImmediateVertexConsumerProvider;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.postprocess.EntityShader;
-import meteordevelopment.meteorclient.utils.render.postprocess.PostProcessShaders;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -60,13 +59,10 @@ public abstract class LevelRendererMixin implements ILevelRenderer {
 
     @Unique
     private NoRender noRender;
-    @Unique
-    private ESP esp;
 
     // if a world exists, meteor is initialised
     @Inject(method = "setLevel", at = @At("TAIL"))
     private void onSetLevel(ClientLevel level, CallbackInfo ci) {
-        esp = Modules.get().get(ESP.class);
         noRender = Modules.get().get(NoRender.class);
     }
 
@@ -115,11 +111,6 @@ public abstract class LevelRendererMixin implements ILevelRenderer {
 
     // Entity Shaders
 
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    private void onRenderLevelHead(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
-        PostProcessShaders.beginRender();
-    }
-
     @Unique
     private final OutlineRenderCommandQueue outlineRenderCommandQueue = new OutlineRenderCommandQueue();
 
@@ -143,9 +134,6 @@ public abstract class LevelRendererMixin implements ILevelRenderer {
                 mc.gameRenderer.getGameRenderState()
             );
         }
-
-        draw(levelRenderState, poseStack, PostProcessShaders.CHAMS, _ -> Color.WHITE);
-        draw(levelRenderState, poseStack, PostProcessShaders.ENTITY_OUTLINE, entity -> esp.getColor(entity));
     }
 
     @Unique
@@ -185,22 +173,6 @@ public abstract class LevelRendererMixin implements ILevelRenderer {
 
         provider = null;
         meteor$popEntityOutlineFramebuffer();
-    }
-
-    @ModifyExpressionValue(method = "extractVisibleEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;isSectionCompiledAndVisible(Lnet/minecraft/core/BlockPos;)Z"))
-    boolean fillEntityRenderStatesIsRenderingReady(boolean original) {
-        if (esp.forceRender()) return true;
-        return original;
-    }
-
-    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V", shift = At.Shift.AFTER))
-    private void addMainPass$submitEntityVertices(CallbackInfo ci) {
-        PostProcessShaders.submitEntityVertices();
-    }
-
-    @Inject(method = "resize", at = @At("HEAD"))
-    private void onResize(int width, int height, CallbackInfo ci) {
-        PostProcessShaders.onResized(width, height);
     }
 
     @Inject(method = "extractLevel", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/LevelRenderState;cloudColor:I", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))

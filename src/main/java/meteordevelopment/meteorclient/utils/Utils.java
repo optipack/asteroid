@@ -36,6 +36,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.effect.MobEffect;
@@ -659,7 +660,7 @@ public class Utils {
         if (mc.player == null) { return false; }
         return
             MeteorClient.BYPASS_CHEATS
-            || mc.player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS)
-            || mc.isInSingleplayer();
+            || mc.player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)
+            || mc.isLocalServer();
     }
 }

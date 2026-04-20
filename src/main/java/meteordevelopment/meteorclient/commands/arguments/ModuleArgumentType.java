@@ -25,7 +25,6 @@ public class ModuleArgumentType implements ArgumentType<Module> {
     private static final DynamicCommandExceptionType NO_SUCH_MODULE = new DynamicCommandExceptionType(name -> Component.literal("Module with name " + name + " doesn't exist."));
 
     private static final Collection<String> EXAMPLES = Modules.get().getAllEnabled()
-        .stream()
         .limit(3)
         .map(module -> module.name)
         .toList();
@@ -52,7 +51,7 @@ public class ModuleArgumentType implements ArgumentType<Module> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(Modules.get().getAllEnabled().stream().map(module -> module.name), builder);
+        return SharedSuggestionProvider.suggest(Modules.get().getAllEnabled().map(module -> module.name), builder);
     }
 
     @Override

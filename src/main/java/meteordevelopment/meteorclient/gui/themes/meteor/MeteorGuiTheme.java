@@ -67,8 +67,8 @@ public class MeteorGuiTheme extends GuiTheme {
         .min(0.75)
         .sliderRange(0.75, 2.5)
         .onSliderRelease()
-        .onChanged(aDouble -> {
-            if (mc.currentScreen instanceof WidgetScreen) ((WidgetScreen) mc.currentScreen).invalidate();
+        .onChanged(_ -> {
+            if (mc.screen instanceof WidgetScreen) ((WidgetScreen) mc.screen).invalidate();
         })
         .build()
     );

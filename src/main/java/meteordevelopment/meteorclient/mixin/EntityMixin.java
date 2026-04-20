@@ -16,13 +16,10 @@ import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.fakeplayer.FakePlayerEntity;
-import net.minecraft.client.Camera;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -92,11 +89,6 @@ public abstract class EntityMixin {
         if (original == Pose.CROUCHING && !mc.player.isShiftKeyDown() && ((PlayerAccessor) mc.player).meteor$canChangeIntoPose(Pose.STANDING))
             return Pose.STANDING;
         return original;
-    }
-
-    @ModifyReturnValue(method = "isSuppressingBounce", at = @At("RETURN"))
-    private boolean cancelBounce(boolean original) {
-        return Modules.get().get(NoFall.class).cancelBounce() || original;
     }
 
     @Inject(method = "turn", at = @At("HEAD"), cancellable = true)

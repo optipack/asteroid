@@ -10,11 +10,11 @@ import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.misc.InventoryTweaks;
 import meteordevelopment.meteorclient.systems.modules.render.ItemHighlight;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.ItemStackArgument;
-import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +31,13 @@ public class ItemCommand extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
+    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
         buildHighlight(builder);
         buildBlock(builder);
         buildLock(builder);
     }
 
-    private void buildHighlight(LiteralArgumentBuilder<CommandSource> builder) {
+    private void buildHighlight(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
         builder.then(literal("highlight")
             .executes(context -> {
                 List<Item> items = itemHighlight.items.get();
@@ -60,10 +60,10 @@ public class ItemCommand extends Command {
 
                 return SINGLE_SUCCESS;
             })
-            .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+            .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                 .executes(context -> {
                     List<Item> items = itemHighlight.items.get();
-                    Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                    Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                     if (items.contains(item)) return SINGLE_SUCCESS;
 
@@ -105,10 +105,10 @@ public class ItemCommand extends Command {
                         return SINGLE_SUCCESS;
                     })
                 )
-                .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+                .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                     .executes(context -> {
                         List<Item> items = itemHighlight.items.get();
-                        Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                        Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                         if (!items.contains(item)) return SINGLE_SUCCESS;
 
@@ -124,7 +124,7 @@ public class ItemCommand extends Command {
         );
     }
 
-    private void buildBlock(LiteralArgumentBuilder<CommandSource> builder) {
+    private void buildBlock(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
         builder.then(literal("block")
             .executes(context -> {
                 List<Item> items = inventoryTweaks.autoDropItems.get();
@@ -147,10 +147,10 @@ public class ItemCommand extends Command {
 
                 return SINGLE_SUCCESS;
             })
-            .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+            .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                 .executes(context -> {
                     List<Item> items = inventoryTweaks.autoDropItems.get();
-                    Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                    Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                     if (items.contains(item)) return SINGLE_SUCCESS;
 
@@ -192,10 +192,10 @@ public class ItemCommand extends Command {
                         return SINGLE_SUCCESS;
                     })
                 )
-                .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+                .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                     .executes(context -> {
                         List<Item> items = inventoryTweaks.autoDropItems.get();
-                        Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                        Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                         if (!items.contains(item)) return SINGLE_SUCCESS;
 
@@ -211,7 +211,7 @@ public class ItemCommand extends Command {
         );
     }
 
-    private void buildLock(LiteralArgumentBuilder<CommandSource> builder) {
+    private void buildLock(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
         builder.then(literal("lock")
             .executes(context -> {
                 List<Item> items = inventoryTweaks.antiDropItems.get();
@@ -234,10 +234,10 @@ public class ItemCommand extends Command {
 
                 return SINGLE_SUCCESS;
             })
-            .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+            .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                 .executes(context -> {
                     List<Item> items = inventoryTweaks.antiDropItems.get();
-                    Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                    Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                     if (items.contains(item)) return SINGLE_SUCCESS;
 
@@ -279,10 +279,10 @@ public class ItemCommand extends Command {
                         return SINGLE_SUCCESS;
                     })
                 )
-                .then(argument("item", ItemStackArgumentType.itemStack(REGISTRY_ACCESS))
+                .then(argument("item", ItemArgument.item(REGISTRY_ACCESS))
                     .executes(context -> {
                         List<Item> items = inventoryTweaks.antiDropItems.get();
-                        Item item = context.getArgument("item", ItemStackArgument.class).getItem();
+                        Item item = context.getArgument("item", ItemInput.class).createItemStack(1).getItem();
 
                         if (!items.contains(item)) return SINGLE_SUCCESS;
 
@@ -299,8 +299,8 @@ public class ItemCommand extends Command {
     }
 
     private ItemStack getItemStack() {
-        ItemStack itemStack = mc.player.getMainHandStack();
-        if (itemStack == null) itemStack = mc.player.getOffHandStack();
+        ItemStack itemStack = mc.player.getMainHandItem();
+        if (itemStack == null) itemStack = mc.player.getOffhandItem();
         return itemStack.isEmpty() ? null : itemStack;
     }
 }
