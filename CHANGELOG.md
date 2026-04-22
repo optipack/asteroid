@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.4.0-alpha] - 2026-04-22
+Rebased to Big-Iron-Cheems/26.1-update, Commit f3f8d10
+
+This is a alpha release of Asteroid, based off an in-development fork of Meteor.
+Please report any bugs / issues you encounter.
+
+### Changed
+- Minecraft is now at 26.1.2
+
 ## [0.3.4] - 2025-12-15
 Rebased to Meteor Client 1.21.11, Build #4
 
