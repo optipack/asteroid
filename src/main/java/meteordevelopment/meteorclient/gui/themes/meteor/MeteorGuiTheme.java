@@ -90,7 +90,7 @@ public class MeteorGuiTheme extends GuiTheme {
     public final Setting<Boolean> hideHUD = sgGeneral.add(new BoolSetting.Builder()
         .name("hide-HUD")
         .description("Hide HUD when in GUI.")
-        .defaultValue(false)
+        .defaultValue(true)
         .onChanged(v -> {
             if (mc.screen instanceof WidgetScreen) mc.options.hideGui = v;
         })
