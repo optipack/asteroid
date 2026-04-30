@@ -51,11 +51,7 @@
   },
   "depends": {
     "java": ">=${jdk_version}",
-    "minecraft": [
-      "26.1",
-      "26.1.1",
-      "${minecraft_version}"
-    ],
+    "minecraft": "${minecraft_version}",
     "fabricloader": ">=${loader_version}"
   },
   "breaks": {
@@ -64,7 +60,7 @@
     "origins": "*",
     "sodium": "<0.8.7",
     "morechathistory": "*",
-    "lithium": "<0.21.3"
+    "lithium": "<0.22.1"
   },
   "provides": ["meteor-client"]
 }

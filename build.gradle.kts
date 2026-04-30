@@ -114,7 +114,7 @@ java {
 // Source: https://github.com/florianreuth/BaseProject/blob/main/src/main/kotlin/de/florianreuth/baseproject/Fabric.kt
 // Licensed under Apache License 2.0
 val jijExcluded = setOf("org.slf4j", "jsr305")
-listOf("jij", "implementation", "include").forEach { configName ->
+listOf("api", "implementation", "include").forEach { configName ->
     configurations.named(configName).configure {
         defaultDependencies {
             configurations.getByName("jij").incoming.resolutionResult.allComponents
@@ -135,6 +135,15 @@ loom {
     accessWidenerPath = file("src/main/resources/meteor-client.classtweaker")
 }
 
+fun toMinecraftCompat(version: String): String {
+    val match = Regex("""^(\d{2})\.([1-9]\d*)(?:\.([1-9]\d*))?$""")
+        .matchEntire(version)
+        ?: error("Invalid Minecraft version format: $version. Expected YY.D or YY.D.H")
+
+    val (year, drop, _) = match.destructured
+    return "~$year.$drop"
+}
+
 tasks {
     processResources {
         val buildNumber = providers.gradleProperty("build_number").getOrElse("")
@@ -145,7 +154,7 @@ tasks {
             "build_number" to buildNumber,
             "commit" to commit,
             "jdk_version" to libs.versions.jdk.get(),
-            "minecraft_version" to libs.versions.minecraft.get(),
+            "minecraft_version" to toMinecraftCompat(libs.versions.minecraft.get()),
             "loader_version" to libs.versions.fabric.loader.get()
         )
 
