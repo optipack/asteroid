@@ -26,6 +26,9 @@ import meteordevelopment.meteorclient.utils.world.ChunkIterator;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.ResourceLoadStateTracker;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.client.renderer.Projection;
 import net.minecraft.client.renderer.ProjectionMatrixBuffer;
 import net.minecraft.core.BlockPos;
@@ -186,6 +189,15 @@ public class Utils {
             if (enchantment.is(enchantmentKey)) return true;
         }
         return false;
+    }
+
+    public static boolean isFood(ItemStack stack) {
+        return isFood(stack.getItem());
+    }
+
+    // Not every food item in minecraft is consumable for some reason (e.g. buckets of any fish)
+    public static boolean isFood(Item item) {
+        return item.components().has(DataComponents.FOOD) && item.components().has(DataComponents.CONSUMABLE);
     }
 
     public static int getRenderDistance() {
@@ -523,7 +535,10 @@ public class Utils {
     }
 
     public static boolean canOpenGui() {
-        return canUpdate() && mc.screen == null;
+        if (canUpdate()) return mc.screen == null;
+        return mc.screen instanceof TitleScreen
+            || mc.screen instanceof JoinMultiplayerScreen
+            || mc.screen instanceof SelectWorldScreen;
     }
 
     public static boolean canCloseGui() {

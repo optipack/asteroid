@@ -450,6 +450,7 @@ public class Modules extends System<Modules> {
         add(new Trail());
         add(new UnfocusedCPU());
         add(new WaypointsModule());
+        add(new WeatherChanger());
         addCheat(new Xray());
         add(new Zoom());
         add(new Blur());
