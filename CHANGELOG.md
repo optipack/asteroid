@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.4.0] - 2026-05-21
+Rebased to Meteor Client 26.1.2, Build #21
+
+### Added
+#### New Modules
+- `Better Farming`: Improvements to manual crop farming.
+  - Automatically replant harvested crops.
+  - Suppress player crop trampling.
+    - Note: this could possibly trigger certain anti-cheats, use with caution.
+  - Prevent breaking unripe crops.
+  - Prevent breaking the base block of sugarcane / bamboo.
+- `Weather Changer`: Change the weather client side. Brought over from Meteor.
+
+### Fixed
+- Shulker box tooltip no longer uses a deprecated translation string with Better Tooltips enabled.
+
 ## [0.4.0-alpha] - 2026-04-22
 Rebased to Big-Iron-Cheems/26.1-update, Commit f3f8d10
 
