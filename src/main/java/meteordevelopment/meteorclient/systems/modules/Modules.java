@@ -417,6 +417,7 @@ public class Modules extends System<Modules> {
         add(new AutoReplenish());
         add(new AutoRespawn());
         add(new AutoTool());
+        add(new BetterFarming());
         add(new FakePlayer());
         add(new MiddleClickExtra());
         add(new NameProtect());
