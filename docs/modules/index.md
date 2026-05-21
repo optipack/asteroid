@@ -24,6 +24,8 @@ Modules have been split in to separate categories, in order to make them easier 
 
 [Auto Tool](auto-tool.md)
 
+[Better Farming](better-farming.md)
+
 [Fake Player](fake-player.md)
 
 [Middle Click Extra](middle-click-extra.md)
@@ -104,6 +106,8 @@ Modules have been split in to separate categories, in order to make them easier 
 [Ambience](ambience.md)
 
 [Auto Reconnect](auto-reconnect.md)
+
+[Auto Sign](auto-sign.md)
 
 [Better Chat](better-chat.md)
 
