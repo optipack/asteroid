@@ -14,6 +14,7 @@
     "AbstractMountInventoryMenuAccessor",
     "AbstractSignEditScreenAccessor",
     "AbstractSignRendererMixin",
+    "AddressCheckMixin",
     "AvatarRendererMixin",
     "BannerRendererMixin",
     "BeaconRendererMixin",
