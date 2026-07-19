@@ -571,6 +571,7 @@ public class Modules extends System<Modules> {
         add(new InventoryTweaks());
         add(new MessageAura());
         add(new Notebot());
+        add(new NoWarnings());
         add(new Notifier());
         add(new PacketCanceller());
         add(new PacketLogger());
