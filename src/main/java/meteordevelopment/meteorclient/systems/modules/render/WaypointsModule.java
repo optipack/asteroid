@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static meteordevelopment.meteorclient.MeteorClient.mc;
 import static meteordevelopment.meteorclient.utils.player.ChatUtils.formatCoords;
 
 public class WaypointsModule extends Module {
@@ -147,7 +146,7 @@ public class WaypointsModule extends Module {
                 // Setup text rendering
                 int preTextA = TEXT.a;
                 TEXT.a *= a;
-                text.begin();
+                text.begin(event.graphics);
 
                 // Render name
                 text.render(waypoint.name.get(), -text.getWidth(waypoint.name.get()) / 2, -16 - text.getHeight(), TEXT, true);
@@ -244,7 +243,7 @@ public class WaypointsModule extends Module {
             };
 
             WButton edit = table.add(theme.button(GuiRenderer.EDIT)).widget();
-            edit.action = () -> mc.setScreen(new EditWaypointScreen(theme, waypoint, () -> initTable(theme, table)));
+            edit.action = () -> mc.gui.setScreen(new EditWaypointScreen(theme, waypoint, () -> initTable(theme, table)));
 
             boolean isOperator = mc.player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
             if (isOperator) {
@@ -277,7 +276,7 @@ public class WaypointsModule extends Module {
         table.row();
 
         WButton create = table.add(theme.button("Create")).expandX().widget();
-        create.action = () -> mc.setScreen(new EditWaypointScreen(theme, null, () -> initTable(theme, table)));
+        create.action = () -> mc.gui.setScreen(new EditWaypointScreen(theme, null, () -> initTable(theme, table)));
     }
 
     private static class EditWaypointScreen extends EditSystemScreen<Waypoint> {

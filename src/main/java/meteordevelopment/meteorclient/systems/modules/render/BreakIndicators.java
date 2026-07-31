@@ -6,7 +6,6 @@
 package meteordevelopment.meteorclient.systems.modules.render;
 
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
-import meteordevelopment.meteorclient.mixin.LevelRendererAccessor;
 import meteordevelopment.meteorclient.mixin.MultiPlayerGameModeAccessor;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
@@ -21,7 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.Map;
+import java.util.List;
+import java.util.SortedSet;
 
 public class BreakIndicators extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -78,8 +78,6 @@ public class BreakIndicators extends Module {
     }
 
     private void renderNormal(Render3DEvent event) {
-        Map<Integer, BlockDestructionProgress> blocks = ((LevelRendererAccessor) mc.levelRenderer).meteor$getDestroyingBlocks();
-
         float ownBreakingStage = ((MultiPlayerGameModeAccessor) mc.gameMode).meteor$getBreakingProgress();
         BlockPos ownBreakingPos = ((MultiPlayerGameModeAccessor) mc.gameMode).meteor$getCurrentBreakingBlockPos();
 
@@ -95,14 +93,17 @@ public class BreakIndicators extends Module {
             renderBlock(event, orig, ownBreakingPos, shrinkFactor, ownBreakingStage);
         }
 
-        blocks.values().forEach(info -> {
+        for (SortedSet<BlockDestructionProgress> progresses : mc.level.destructionProgress().values()) {
+            if (progresses.isEmpty()) continue;
+
+            BlockDestructionProgress info = progresses.last();
             BlockPos pos = info.getPos();
             int stage = info.getProgress();
-            if (pos.equals(ownBreakingPos)) return;
+            if (pos.equals(ownBreakingPos)) continue;
 
             BlockState state = mc.level.getBlockState(pos);
             VoxelShape shape = state.getShape(mc.level, pos);
-            if (shape == null || shape.isEmpty()) return;
+            if (shape == null || shape.isEmpty()) continue;
 
             AABB orig = shape.bounds();
 
@@ -110,7 +111,7 @@ public class BreakIndicators extends Module {
             double progress = 1d - shrinkFactor;
 
             renderBlock(event, orig, pos, shrinkFactor, progress);
-        });
+        }
     }
 
     private void renderBlock(Render3DEvent event, AABB orig, BlockPos pos, double shrinkFactor, double progress) {

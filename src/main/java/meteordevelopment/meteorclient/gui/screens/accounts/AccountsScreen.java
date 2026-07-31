@@ -16,7 +16,7 @@ import meteordevelopment.meteorclient.systems.accounts.AccountType;
 import meteordevelopment.meteorclient.systems.accounts.Accounts;
 import meteordevelopment.meteorclient.utils.misc.NbtUtils;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -36,9 +36,9 @@ public class AccountsScreen extends WindowScreen {
         // Add account
         WHorizontalList l = add(theme.horizontalList()).expandX().widget();
 
-        addButton(l, "Offline", () -> mc.setScreen(new AddCrackedAccountScreen(theme, this)));
-        addButton(l, "Session", () -> mc.setScreen(new AddSessionAccountScreen(theme, this)));
-        addButton(l, "Microsoft", () -> mc.setScreen(new AddMicrosoftAccountScreen(theme, this)));
+        addButton(l, "Offline", () -> mc.gui.setScreen(new AddCrackedAccountScreen(theme, this)));
+        addButton(l, "Session", () -> mc.gui.setScreen(new AddSessionAccountScreen(theme, this)));
+        addButton(l, "Microsoft", () -> mc.gui.setScreen(new AddMicrosoftAccountScreen(theme, this)));
     }
 
     private void addButton(WContainer c, String text, Runnable action) {

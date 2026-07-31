@@ -53,7 +53,7 @@ public class FakePlayer extends Module {
 
     @Override
     public void onActivate() {
-        mc.setScreen(GuiThemes.get().moduleScreen(this));
+        mc.gui.setScreen(GuiThemes.get().moduleScreen(this));
     }
 
     @Override

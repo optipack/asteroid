@@ -38,8 +38,8 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class Freecam extends Module {
@@ -152,8 +152,8 @@ public class Freecam extends Module {
         perspective = mc.options.getCameraType();
         speedValue = speed.get();
 
-        Utils.set(pos, mc.gameRenderer.getMainCamera().position());
-        Utils.set(prevPos, mc.gameRenderer.getMainCamera().position());
+        Utils.set(pos, mc.gameRenderer.mainCamera().position());
+        Utils.set(prevPos, mc.gameRenderer.mainCamera().position());
 
         if (mc.options.getCameraType() == CameraType.THIRD_PERSON_FRONT) {
             yaw += 180;
@@ -173,13 +173,15 @@ public class Freecam extends Module {
         down = Input.isPressed(mc.options.keyShift);
 
         unpress();
-        if (reloadChunks.get()) mc.levelRenderer.allChanged();
+        if (reloadChunks.get()) {
+            mc.levelExtractor.allChanged();
+        }
     }
 
     @Override
     public void onDeactivate() {
         if (reloadChunks.get()) {
-            mc.execute(mc.levelRenderer::allChanged);
+            mc.execute(mc.levelExtractor::allChanged);
         }
 
         mc.options.setCameraType(perspective);
@@ -296,7 +298,7 @@ public class Freecam extends Module {
             posVec,
             max,
             AABB.encapsulatingFullBlocks(BlockPos.containing(posVec.x, posVec.y, posVec.z), BlockPos.containing(max.x, max.y, max.z)),
-            entity -> true,
+            _ -> true,
             maxDist
         );
 
@@ -357,7 +359,7 @@ public class Freecam extends Module {
 
     @EventHandler(priority = EventPriority.LOW)
     private void onMouseScroll(MouseScrollEvent event) {
-        if (speedScrollSensitivity.get() > 0 && mc.screen == null) {
+        if (speedScrollSensitivity.get() > 0 && mc.gui.screen() == null) {
             speedValue += event.value * 0.25 * (speedScrollSensitivity.get() * speedValue);
             if (speedValue < 0.1) speedValue = 0.1;
 

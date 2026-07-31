@@ -55,7 +55,7 @@ public class MeteorGuiTheme extends GuiTheme {
         .sliderRange(0.75, 4)
         .onSliderRelease()
         .onChanged(_ -> {
-            if (mc.screen instanceof WidgetScreen widgetScreen) widgetScreen.invalidate();
+            if (mc.gui.screen() instanceof WidgetScreen widgetScreen) widgetScreen.invalidate();
         })
         .build()
     );
@@ -68,7 +68,7 @@ public class MeteorGuiTheme extends GuiTheme {
         .sliderRange(0.75, 2.5)
         .onSliderRelease()
         .onChanged(_ -> {
-            if (mc.screen instanceof WidgetScreen) ((WidgetScreen) mc.screen).invalidate();
+            if (mc.gui.screen() instanceof WidgetScreen) ((WidgetScreen) mc.gui.screen()).invalidate();
         })
         .build()
     );
@@ -92,7 +92,9 @@ public class MeteorGuiTheme extends GuiTheme {
         .description("Hide HUD when in GUI.")
         .defaultValue(true)
         .onChanged(v -> {
-            if (mc.screen instanceof WidgetScreen) mc.options.hideGui = v;
+            if (mc.gui.screen() instanceof WidgetScreen) {
+                mc.gameRenderer.gameRenderState().guiRenderState.isHudHidden = v;
+            }
         })
         .build()
     );
