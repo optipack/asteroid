@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.4.1-alpha] - 2026-07-31
+Rebased to Big-Iron-Cheems/26.2-update, Commit e8330f5
+
+### Changed
+- Minecraft is now at 26.2
+- Steal and Dump buttons in chests once again renamed to Extract and Insert.
+- The Waypoints death message can now be clicked, which suggests a command to teleport to its coordinates.
+
 ## [0.4.0] - 2026-05-21
 Rebased to Meteor Client 26.1.2, Build #21
 
