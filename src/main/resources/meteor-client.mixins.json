@@ -76,6 +76,7 @@
     "CreativeSlotMixin",
     "CrossbowItemAccessor",
     "CustomHeadLayerMixin",
+    "DialogScreenMixin",
     "DirectionAccessor",
     "DisconnectedScreenMixin",
     "DownloadedPackSourceMixin",
@@ -99,6 +100,7 @@
     "FishingHookAccessor",
     "FishingHookMixin",
     "FluidRendererMixin",
+    "FocusableTextWidgetMixin",
     "FogRendererMixin",
     "FontMixin",
     "FoodDataMixin",
@@ -199,6 +201,7 @@
     "WebBlockMixin",
     "WingsLayerMixin",
     "WorldBorderMixin",
+    "WorldOpenFlowsMixin",
     "YggdrasilMinecraftSessionServiceAccessor"
   ],
   "injectors": {

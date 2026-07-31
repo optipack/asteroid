@@ -26,7 +26,7 @@ import meteordevelopment.meteorclient.mixininterface.IClientboundExplodePacket;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.misc.NoWarnings;
+import meteordevelopment.meteorclient.systems.modules.misc.Annoyances;
 import meteordevelopment.meteorclient.systems.modules.movement.Velocity;
 import meteordevelopment.meteorclient.systems.modules.player.NoRotate;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
@@ -189,10 +189,8 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     // Credit: adapted from Unjank by TheNuclearNexus (MIT licensed)
     @Inject(method = "openCommandSendConfirmationWindow", at = @At(value = "HEAD"), cancellable = true)
     private void openCommandSendConfirmationWindow(String command, String messageKey, Screen screenAfterCommand, CallbackInfo ci) {
-        NoWarnings noWarnings = Modules.get().get(NoWarnings.class);
-        if (!noWarnings.isActive()) return;
-
-        if (noWarnings.disableCommandRunWarning()) {
+        Annoyances annoyances = Modules.get().get(Annoyances.class);
+        if (annoyances.disableCommandRunWarning()) {
             this.send(new ServerboundChatCommandPacket(command));
             this.minecraft.setScreen(screenAfterCommand);
             ci.cancel();

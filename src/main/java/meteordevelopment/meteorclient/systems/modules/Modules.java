@@ -562,6 +562,7 @@ public class Modules extends System<Modules> {
     }
 
     private void initMisc() {
+        add(new Annoyances());
         add(new AntiPacketKick());
         add(new AutoReconnect());
         add(new BetterBeacons());
@@ -571,7 +572,6 @@ public class Modules extends System<Modules> {
         add(new InventoryTweaks());
         add(new MessageAura());
         add(new Notebot());
-        add(new NoWarnings());
         add(new Notifier());
         add(new PacketCanceller());
         add(new PacketLogger());
