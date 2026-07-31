@@ -36,4 +36,8 @@ public class NoWarnings extends Module {
     public NoWarnings() {
         super(Categories.Misc, "no-warnings", "Disable annoying warning screens.");
     }
+
+    public boolean disableCommandRunWarning() {
+        return commandRunWarning.get();
+    }
 }

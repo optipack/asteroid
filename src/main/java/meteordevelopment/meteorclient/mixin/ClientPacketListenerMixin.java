@@ -26,11 +26,13 @@ import meteordevelopment.meteorclient.mixininterface.IClientboundExplodePacket;
 import meteordevelopment.meteorclient.pathing.BaritoneUtils;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.systems.modules.misc.NoWarnings;
 import meteordevelopment.meteorclient.systems.modules.movement.Velocity;
 import meteordevelopment.meteorclient.systems.modules.player.NoRotate;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -180,6 +182,19 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             }
 
             minecraft.gui.getChat().addRecentChat(message);
+            ci.cancel();
+        }
+    }
+
+    // Credit: adapted from Unjank by TheNuclearNexus (MIT licensed)
+    @Inject(method = "openCommandSendConfirmationWindow", at = @At(value = "HEAD"), cancellable = true)
+    private void openCommandSendConfirmationWindow(String command, String messageKey, Screen screenAfterCommand, CallbackInfo ci) {
+        NoWarnings noWarnings = Modules.get().get(NoWarnings.class);
+        if (!noWarnings.isActive()) return;
+
+        if (noWarnings.disableCommandRunWarning()) {
+            this.send(new ServerboundChatCommandPacket(command));
+            this.minecraft.setScreen(screenAfterCommand);
             ci.cancel();
         }
     }
