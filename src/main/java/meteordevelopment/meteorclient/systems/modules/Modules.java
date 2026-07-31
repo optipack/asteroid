@@ -460,6 +460,7 @@ public class Modules extends System<Modules> {
     }
 
     private void initMisc() {
+        add(new Annoyances());
         add(new AutoClicker());
         add(new AutoReconnect());
         add(new BetterChat());
@@ -467,7 +468,6 @@ public class Modules extends System<Modules> {
         add(new SoundBlocker());
         add(new InventoryTweaks());
         add(new Ambience());
-        add(new NoWarnings());
         add(new AutoSign());
     }
 

@@ -68,6 +68,7 @@
     "CreativeSlotMixin",
     "CrossbowItemAccessor",
     "CustomHeadLayerMixin",
+    "DialogScreenMixin",
     "DirectionAccessor",
     "DisconnectedScreenMixin",
     "DownloadQueueMixin",
@@ -84,6 +85,7 @@
     "FireworksSparkParticleSubMixin",
     "FishingHookAccessor",
     "FluidRendererMixin",
+    "FocusableTextWidgetMixin",
     "FogRendererMixin",
     "FontMixin",
     "GameRendererMixin",
@@ -168,7 +170,8 @@
     "VisGraphMixin",
     "WingsLayerMixin",
     "VulkanDeviceMixin",
-    "WingsLayerMixin"
+    "WingsLayerMixin",
+    "WorldOpenFlowsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
