@@ -467,6 +467,7 @@ public class Modules extends System<Modules> {
         add(new SoundBlocker());
         add(new InventoryTweaks());
         add(new Ambience());
+        add(new NoWarnings());
         add(new AutoSign());
     }
 
