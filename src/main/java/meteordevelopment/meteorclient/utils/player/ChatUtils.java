@@ -11,7 +11,6 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.mixininterface.IChatHud;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.utils.PostInit;
-import meteordevelopment.meteorclient.utils.misc.text.MeteorClickEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.phys.Vec3;
@@ -255,6 +254,15 @@ public class ChatUtils {
         String coordsString = String.format("(highlight)(underline)%.0f, %.0f, %.0f(default)", pos.x, pos.y, pos.z);
         MutableComponent coordsText = formatMsg(coordsString, ChatFormatting.GRAY);
 
+        Style style = coordsText.getStyle()
+            .withHoverEvent(new HoverEvent.ShowText(
+                Component.literal("Teleport to coordinates")
+            ))
+            .withClickEvent(new ClickEvent.SuggestCommand(
+                String.format("/tp @s %d %d %d", (int) pos.x, (int) pos.y, (int) pos.z)
+            ));
+
+        coordsText.setStyle(style);
         return coordsText;
     }
 }
