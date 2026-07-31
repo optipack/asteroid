@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.4.1-alpha-2] - 2026-08-01
+### Added
+#### New Modules
+- `Annoyances`: Disable annoying warning screens and weird UI.
+  - Disable experimental settings warning when loading a world.
+  - Disable the command run warning when running commands in a datapack dialog.
+  - Remove the dialog warning icon.
+  - Remove the text area focus border in dialogs.
+
 ## [0.4.1-alpha] - 2026-07-31
 Rebased to Big-Iron-Cheems/26.2-update, Commit e8330f5
 
