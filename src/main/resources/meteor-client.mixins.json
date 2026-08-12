@@ -168,7 +168,6 @@
     "TridentItemMixin",
     "Vec3Mixin",
     "VisGraphMixin",
-    "WingsLayerMixin",
     "VulkanDeviceMixin",
     "WingsLayerMixin",
     "WorldOpenFlowsMixin"
