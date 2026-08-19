@@ -104,6 +104,13 @@ public class BetterChat extends Module {
         .build()
     );
 
+    public final Setting<Boolean> copyCommandOutput = sgGeneral.add(new BoolSetting.Builder()
+        .name("command-output-copyable")
+        .description("Adds copy action to some command outputs.")
+        .defaultValue(true)
+        .build()
+    );
+
     // Filter
 
     private final Setting<Boolean> antiSpam = sgFilter.add(new BoolSetting.Builder()
