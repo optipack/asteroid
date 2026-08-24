@@ -437,9 +437,9 @@ public class Modules extends System<Modules> {
         add(new BossStack());
         add(new Breadcrumbs());
         add(new BreakIndicators());
-        addCheat(new CameraTweaks());
+        add(new CameraTweaks());
         add(new EntityOwner());
-        addCheat(new Freecam());
+        add(new Freecam());
         add(new FreeLook());
         add(new Fullbright());
         add(new HandView());
