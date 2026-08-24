@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes to Meteor are not documented here, only Asteroid specific changes.
 
+## [0.4.1-alpha-3] - 2026-08-24
+### Added
+- Command Output Copyable toggle to Better Chat
+  - Makes the result of some commands copyable to clipboard when clicked.
+  - Currently only works for /data get, but may be extended to more commands in the future.
+
+### Changed
+- The following modules are no longer considered cheats:
+  - Camera Tweaks
+  - Freecam
+- Improved the readme.
+
+### Fixed
+- Tooltips when using Vanilla font now render properly above module text.
+  - NOTE: There is still a lot of issues regarding Vanilla font rendering, which is why this release is an alpha.
+
 ## [0.4.1-alpha-2] - 2026-08-01
 ### Added
 #### New Modules

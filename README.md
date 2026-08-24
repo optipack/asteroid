@@ -1,4 +1,4 @@
-<img src="https://cdn.modrinth.com/data/cFGzaOGg/c3e4d8f30f741767471b922167f245d5c8243dcd.png" alt="Asteroid Logo" width=128>
+<img src="./assets/logo.png" alt="Asteroid Logo" width=128>
 
 # Asteroid
 The utility client for Modrinth. Press `Right Shift` to open the menu in-game.
@@ -9,11 +9,28 @@ Asteroid is a fork / distribution of the [Meteor Client](https://meteorclient.co
 I have made this fork as I believe that the user experience of utility clients is rather nice, with their modular approach to UI and configuration. I have found that I often install Meteor client purely to use it's less anarchy-style features, in my own worlds, and I wished I could add the mod to my modpack here on Modrinth. It only made sense to fork it just to focus on those few features, and remove the combat / movement modules that are more anarchy focused, and less in-tune with Modrinth's style of mods.
 
 ### Credits
-All credits for the mod itself go to the Meteor client team (MineGame, squidoodly and seasnail).
+As Asteroid is based on Meteor Client, huge credits go to the Meteor client team (MineGame, squidoodly and seasnail).
 
 Make sure to give them a star on [Github](https://github.com/MeteorDevelopment/meteor-client), or even [Donate](https://meteorclient.com/donate) to them to help fund development.
 
 Updated waypoint textures by Wulfian.
+
+## Highlights
+### Better Farming
+#### Auto re-plant and unripe crop protection
+Automatically re-plant crops when they are broken. As well, prevent yourself from accidentally breaking an unripe crop.
+
+![Animated image of auto re-plant crops feature](./assets/video_auto_crop.webp)
+
+#### Suppress farmland trampling
+Prevent farmland from turning back to soil if you accidentally jump on it.
+
+![Animated image of suppress farmland trampling feature](./assets/video_no_trample.webp)
+
+### Annoyances
+Disable certain annoying UI, such as the experimental world settings warning.
+
+![Screenshot of the annoyances module config](./assets/screenshot_annoyances.png)
 
 ## Features
 ### Modules
@@ -26,6 +43,7 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Auto Replenish: Replaces a tool / food on the hotbar from the inventory when depleted. Nice QoL.
 - Auto Respawn: Automatically presses the respawn button on death.
 - Auto Tool: Automatically switches to the correct tool when going to mine a block.
+- Better Farming: Quality of life improvements to manual crop farming.
 - Fake Player: Spawns a completely client side fake player. Provides no actual use cases apart from looking cool, or maybe getting a good screenshot.
 - Middle Click Extra: Bind middle click to use a firework rocket, experience bottle, or to add a friend.
 - Name Protect: Hides your username and skin. Useful for taking screenshots without leaking your account.
@@ -40,12 +58,13 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Block ESP\*: Renders outlines around blocks in the whitelist. Helpful for locating a particular block type.
 - Block Selection: Modifies block selection rendering.
 - Blur: Blurs some menu backgrounds.
+- Boss Stack: Stacks boss bars to make your HUD less cluttered..
 - Breadcrumbs: Draws a line behind the player letting them backtrace. Good for players who get lost easily.
 - Break Indicators: Break indicator customization and improvements.
-- Camera Tweaks\*: Customize the third person camera. Allows for clipping in to blocks.
+- Camera Tweaks: Customize the third person camera. Allows for clipping in to blocks.
 - Entity Owner: Displays the owner of the tamed animal above the given entity.
 - Free Look: Allows the player to position the third person camera, then move their head normally.
-- Freecam\*: Frees the players camera to act like spectator mode.
+- Freecam: Frees the players camera to act like spectator mode.
 - Fullbright: Disables lighting, similar to night vision.
 - Hand View: Customize how items are rendered in the players hand.
 - Item Highlight: Highlights particular items in GUIs, to allow you to find the item you are looking for easier.
@@ -58,11 +77,13 @@ Modules marked with an asterisk (`*`) require OP or Singleplayer to use.
 - Trail: Renders a trail of particles behind the player. Useless but fun.
 - Unfocused CPU: Limits FPS when Minecraft isn't focused.
 - Waypoints: Allows you to create and save waypoints, to help with navigation.
+- Weather Changer: Changes the current weather client side.
 - Xray\*: Disables rendering for certain blocks. Useful for finding a particular block.
 - Zoom: Zooms your view similar to how a spyglass would.
 
 #### Misc
 - Ambience: Customize stuff like how the sky renders. Allows for cursed things like End sky in the Overworld. Purely cosmetic.
+- Annoyances: Disable various annoying warning screens and weird UI.
 - Auto Reconnect: Automatically reconnects a user if they somehow lost connection to a server. Useful for AFK sessions on servers that restart at a set time.
 - Auto Sign: Automatically writes signs, using the text of the first placed sign. Useful for mob farms, where many signs have to be placed.
 - Better Chat: Improvements to chat, like prefixes, suffixes and filter regexes.
@@ -100,6 +121,7 @@ The following is a list of commands Asteroid provides. These are all prefixed wi
 - Rotation (`.rotation`): Adjusts the rotation of the player.
 - Waypoint (`.wp`): Manage waypoints.
 - Input (`.input`): Simulate a given input.
+- Item (`.item`): Manages item related modules.
 
 #### Macros
 Asteroid allows players to create macros, which can chain these commands.
