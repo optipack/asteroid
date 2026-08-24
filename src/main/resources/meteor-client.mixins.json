@@ -139,6 +139,7 @@
     "MultiPlayerGameModeAccessor",
     "MultiPlayerGameModeMixin",
     "MutableComponentMixin",
+    "NbtUtilsMixin",
     "OptionInstanceMixin",
     "OptionsMixin",
     "ParticleEngineMixin",
