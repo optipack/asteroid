@@ -20,7 +20,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 public class Zoom extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -81,7 +81,7 @@ public class Zoom extends Module {
     public Zoom() {
         super(Categories.Render, "zoom", "Zooms your view.");
         autoSubscribe = false;
-        keybind.set(Keybind.fromKey(GLFW.GLFW_KEY_C));
+        keybind.set(Keybind.fromKey(InputConstants.KEY_C));
         toggleOnBindRelease = true;
         chatFeedback = false;
     }
@@ -113,7 +113,7 @@ public class Zoom extends Module {
 
     @EventHandler
     public void onKeyPressed(KeyInputEvent event) {
-        if (event.key() != GLFW.GLFW_KEY_F1) return;
+        if (event.key() != InputConstants.KEY_F1) return;
         hudManualToggled = true;
     }
 
